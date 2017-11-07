@@ -249,6 +249,7 @@ export class DocList extends Component {
           dataPeriodAndYear={dataPeriodAndYear}
           formsList={formsList}
           doclist={doclist}
+          clientIsChecked={clientIsChecked}
         />
       </div>
     );

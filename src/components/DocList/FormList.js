@@ -223,7 +223,7 @@ export default class FormList extends Component {
   }
 
   onKeydownhandler(e) {
-    const {constextPopupIsShow} = this.state;
+    const { constextPopupIsShow } = this.state;
     if (e.keyCode === 27) {
       if (this.state.constextPopupIsShow) {
         this.setState({
@@ -242,7 +242,6 @@ export default class FormList extends Component {
   contextMenu(e) {
     let menuPosition = this.positionMenu(e);
     const dataKey = e.target.dataset.key  || e.target.parentNode.dataset.key;
-    // console.log(dataKey);
 
     this.setState({
       curDoc: dataKey,
@@ -255,35 +254,39 @@ export default class FormList extends Component {
     if (curDocObj.status === 0) {
       return (
         <a
-          href={`getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016`}
+          className="btn"
+          href={this.EditDocs.call(this, curDocObj)}
           target="_blank"
-          onClick={this.EditDocs.bind(this, curDocObj)}>
+        >
           Редактировать
         </a>
       );
     }
 
     return (
-      <button
-        onClick={this.createDocs.bind(this, curDocObj, curDoc)}>
+      <a
+        href={this.EditDocs.call(this, curDocObj)}
+        target="_blank"
+        className="btn"
+      >
         Создать
-      </button>
+      </a>
     );
   }
 
 
-  lookDocs(curDocObj) {
-    console.log(curDocObj);
+  // lookDocs({ client, period, year, type }) {
+  //   return `getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}&edit=true`;
+  // }
+
+
+  EditDocs({ client, period, year, type }) {
+    return `getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
   }
 
-
-  EditDocs(curDocObj) {
-    console.log(curDocObj);
-  }
-
-  createDocs(curDocObj, curDoc) {
-    console.log(curDoc);
-    console.log(curDocObj && curDocObj);
+  createDocs(curDoc, client) {
+    let doc =  curDoc.split('_');
+    return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}`;
   }
 
   foo(curDoc, curDocObj, e) {
@@ -303,7 +306,8 @@ export default class FormList extends Component {
     const {
       formsList,
       dataPeriodAndYear,
-      doclist
+      doclist,
+      clientIsChecked
     } = this.props;
 
 
@@ -329,16 +333,23 @@ export default class FormList extends Component {
           <div className="popup-btn">
             {popupIsShow && curDocObj &&
               this.getActionCurStatus(curDocObj, curDoc)}
-            <button
-              onClick={this.createDocs.bind(this, curDoc)}
-              className={`${popupIsShow && curDocObj && 'none'}`}
-            >Создать
-            </button>
-            <button
-              onClick={this.lookDocs.bind(this, curDocObj)}
-              className={`${!curDocObj ? 'none' : null}`}
-            >Просмотреть
-            </button>
+            {popupIsShow &&
+              <a
+                onClick={(e) => {console.log(e.target)}}
+                href={`${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}` }
+                target="_blank"
+                className={`btn ${popupIsShow && curDocObj && 'none'}`}
+              >Создать
+              </a>
+            }
+            {popupIsShow && curDocObj &&
+              <a
+                href={`${this.EditDocs.call(this, curDocObj)}&edit=true` }
+                target="_blank"
+                className={`btn ${!curDocObj ? 'none' : null}`}
+              >Просмотреть
+              </a>
+            }
             <button onClick={this.popupClose}>Отмена</button>
           </div>
         </div>
