@@ -1,4 +1,8 @@
 .form-signin {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   max-width: 250px;
@@ -238,9 +242,15 @@
 }
 
 #context-menu {
-  display: none;
+  width: 200px;
+  height: 100px;
   position: absolute;
   z-index: 10;
+  top: 0;
+  background-color: white;
+  padding: 10px;
+  left: 520px;
+  border: 1px solid;
 }
 
 .context-menu--active {
@@ -249,4 +259,9 @@
 
 .popup-title {
   font-weight: bold;
+}
+
+.test {
+  display: inline-block;
+  margin-right: 20px;
 }
