@@ -4,30 +4,15 @@ import ReportPeriod from './ReportPeriod';
 import Report from './Report';
 import DocTable from './DocTable';
 import './style.css';
+// import axios from 'axios';
 
 export let data;
 
-//TODO ПЕРЕДЕЛАТЬ В HELPERS getCurPeriod И getCurYear
+//TODO ПЕРЕДЕЛАТЬ В UTILS getCurPeriod И getCurYear
 const curPeriod = Math.ceil((new Date().getMonth() + 1) / 3);
 const currentTime = new Date();
 const curYear = currentTime.getFullYear();
 
-
-const clients = [
-  {
-    id: '1-10KWGP',
-    value: 'Эсти'
-  },{
-    id: '1-1PALWC',
-    value: 'Весенний холм'
-  },{
-    id: '1-2DTA97',
-    value: 'Брокинвестсервис'
-  },{
-    id: '1-2W1T5D',
-    value: 'СК Октябрьский'
-  }
-];
 
 const periods = {
   1: '1 квартал',
@@ -36,46 +21,76 @@ const periods = {
   4: '4 квартал'
 };
 
-const formsList = [
-  {
-    formType: 'INPUT',
-    formid: 'FORM01',
-    fullName: 'Бухгалтерский баланс'
-    // perivCode:
-  },
-  {
-    formType: 'INPUT',
-    formid: 'FORM02',
-    fullName: 'Отчет о финансовых результатах'
-    // perivCode:
-  }
-];
-
 
 export class DocList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      listClient: clients,
-      listClientFiltered: clients,
       isPeriod: periods,
       clientShow: false,
       clientIsChecked: null,
       periodIsChecked: curPeriod,
       yearIsChecked: curYear,
       dataPeriodAndYear: null,
-      formsList,
       docPeriods: null,
       showGenerateReport: false,
       analyticReportYear: null
+    };
+
+    this.onKeydownhandler = this.onKeydownhandler.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.onKeydownhandler);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeydownhandler)
+  }
+
+
+  changePeriodsOnNext() {
+    let { periodIsChecked, yearIsChecked } = this.state;
+
+    if (periodIsChecked !== 4) {
+      this.setState({periodIsChecked: ++periodIsChecked});
+      return;
+    }
+    if (yearIsChecked !== curYear) {
+      this.setState({periodIsChecked: 1, yearIsChecked: ++yearIsChecked});
     }
   }
 
-  filterListClients (list) {
-    this.setState({
-      listClientFiltered: list
-    });
+  changePeriodsOnPrev() {
+    let { periodIsChecked, yearIsChecked } = this.state;
+
+    if (periodIsChecked !== 1) {
+      this.setState({periodIsChecked: --periodIsChecked});
+      return;
+    }
+    if (yearIsChecked !== 1996) {
+      this.setState({periodIsChecked: 4, yearIsChecked: --yearIsChecked});
+    }
+  }
+
+
+  onKeydownhandler(e) {
+    const { clientShow } = this.state;
+
+    if (e.keyCode === 27) {
+      if (this.state.clientShow) {
+        this.setState({
+          clientShow: false
+        });
+      }
+
+      if (this.state.showGenerateReport) {
+        this.setState({
+          showGenerateReport: false
+        });
+      }
+    }
   }
 
 
@@ -153,8 +168,11 @@ export class DocList extends Component {
   setClient(listClient, clientId) {
     let res;
     listClient.forEach((item) => {
-      if (item.id === clientId) res = item.value;
+      if (item.divid === clientId) {
+        res = item.descr;
+      }
     });
+
     return res;
   }
 
@@ -162,18 +180,21 @@ export class DocList extends Component {
   render() {
     const {
       getdocList,
-      doclist
+      doclist,
+      listClientFiltered,
+      listClient,
+      formsList,
+      filterListClients
     } = this.props;
 
     const {
-      listClient,
       clientShow,
       clientIsChecked,
       isPeriod,
       dataPeriodAndYear,
-      formsList,
       showGenerateReport,
-      listClientFiltered
+      periodIsChecked,
+      yearIsChecked
     } = this.state;
 
 
@@ -183,7 +204,8 @@ export class DocList extends Component {
         <button
           onClick={::this.handlerOnClickShow}
           className='clients-items-btn'
-        >{!clientIsChecked ? 'Выберите клиента из справочника' : ::this.setClient(listClient, clientIsChecked)}
+        >{!clientIsChecked ? 'Выберите клиента из справочника' :
+            ::this.setClient(listClient, clientIsChecked)}
           ▼
         </button>
         <button
@@ -201,19 +223,23 @@ export class DocList extends Component {
           />
         }
         <ReportPeriod
+          changePeriodsOnPrev={::this.changePeriodsOnPrev}
+          changePeriodsOnNext={::this.changePeriodsOnNext}
           receiveOnClick={::this.receiveOnClick}
           handlerYearIsChecked={::this.handlerYearIsChecked}
           handlerPeriodIsChecked={::this.handlerPeriodIsChecked}
           isPeriod={isPeriod}
           clientIsChecked={clientIsChecked}
           getdocList={getdocList}
-          dataPeriodAndYear={dataPeriodAndYear}
+          // dataPeriodAndYear={dataPeriodAndYear}
+          periodIsChecked={periodIsChecked}
+          yearIsChecked={yearIsChecked}
         />
         <ListItemsClients
           handlerclientRemove={::this.handlerclientRemove}
           handlerOnClickHide={::this.handlerOnClickHide}
           handlerclientIsChecked={::this.handlerclientIsChecked}
-          filterListClients={::this.filterListClients}
+          filterListClients={filterListClients}
           clientIsChecked={clientIsChecked}
           listClient={listClient}
           listClientFiltered={listClientFiltered}

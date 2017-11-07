@@ -5,7 +5,6 @@ import {
   GET_DATA_SUCCESS,
   GET_DATA_FAILURE,
   CALCULATE_INITIAL_DATA,
-  CREATE_NEW_DOCUMENT,
   UPDATE_STORE
 } from '../constants/index';
 
@@ -83,13 +82,11 @@ function createValuesHash(data) {
     hash[item.id].value = null;
   });
 
-  if (data.attributes) {
-    Object.values(data.attributes).forEach((item) => {
-      hash[item[0]] = {
-        value: item[1] || null
-      };
-    });
-  }
+  Object.values(data.attributes).forEach((item) => {
+    hash[item[0]] = {
+      value: item[1] || null
+    };
+  });
 
   Object.values(this.docType1.attributes).forEach((item) => {
     const dependencies = getDependencies(item.formula);
@@ -372,23 +369,6 @@ function parseXML(payload) {
   return parsedXML;
 }
 
-function createInitialData(url) {
-  const data = {
-    client: url.match(/clientName=([^&]*)/)[1],
-    type: url.match(/type=([^&]*)/)[1],
-    period: url.match(/Q=([^&]*)/)[1],
-    year: url.match(/year=([^&]*)/)[1]
-  };
-
-  return data;
-}
-
-function checkData(payload) {
-  if (payload.id) return payload;
-
-  return createInitialData(payload);
-}
-
 export default function employeesTable(state = initialState, action) {
   switch (action.type) {
     case GET_DATA_REQUEST:
@@ -411,13 +391,10 @@ export default function employeesTable(state = initialState, action) {
 
     case GET_DATA_SUCCESS:
       return { ...state,
-        data: checkData(action.payload),
+        data: action.payload,
         valuesHash: createValuesHash.call(state, action.payload),
         fetching: false
       };
-
-    case CREATE_NEW_DOCUMENT:
-      return { ...state };
 
     case GET_DATA_FAILURE:
       return { ...state, error: action.payload, fetching: false };

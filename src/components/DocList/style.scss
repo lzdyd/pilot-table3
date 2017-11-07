@@ -5,7 +5,6 @@
 
   .table.employees-table {
     display: table;
-    //border: 1px solid #ddd;
     border-radius: 5px;
 
     .table-row {
@@ -395,12 +394,13 @@ select {
 
 .clients {
   position: absolute;
-  top: 30px;
+  top: 50px;
+  left: 100px;
   display: none;
-  border: 1px solid;
   padding: 20px;
   z-index: 100;
   background-color: white;
+  box-shadow: -5px -5px 20px rgba(0, 0, 0, 0.2), 5px 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .clients-items-btn {
@@ -410,6 +410,7 @@ select {
 }
 
 .clients-list {
+  width: 100%;
   display: inline-block;
   margin: 0;
   padding: 0;

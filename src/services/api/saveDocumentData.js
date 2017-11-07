@@ -7,18 +7,32 @@ const saveDocumentDataAPI = (data, doctype) => {
 
   updatedDoctype.attributes = updatedAttributes;
 
-  const xhr = new XMLHttpRequest();
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
 
-  xhr.open('POST', 'http://192.168.235.188:9081/prototype/saveDocument');
+    xhr.open('POST', `http://localhost:8080/test/employees/${id}/edit`);
 
-  // xhr.setRequestHeader('Accept', 'application/json');
-  xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.setRequestHeader('content-type', 'application/json');
 
-  // xhr.withCredentials = true;
+    xhr.withCredentials = true;
 
-  xhr.send(JSON.stringify(updatedDoctype));
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        resolve(xhr.responseText);
+      } else {
+        reject(Error(xhr.statusText));
+      }
+    };
+
+    xhr.onerror = () => {
+      reject(Error('Network error'));
+    };
+
+    xhr.send(JSON.stringify(updatedDoctype));
+  });
 };
 
 export default function (data, doctype) {
-  saveDocumentDataAPI(data, doctype);
+  return saveDocumentDataAPI(data, doctype);
 }

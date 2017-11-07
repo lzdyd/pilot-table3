@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
-
+import _ from 'lodash';
 import { AllPeriods } from './TableHeader';
 
 function generateFormList(data) {
   const formsArray = [];
 
   data.forEach((item) => {
-    const type = item.formType;
+    const formid = item.formid;
 
-    if (type !== null && type === 'INPUT') {
       const formObject = {
         formid: item.formid,
         fullName: item.fullName,
         type: item.formType,
-        periv: null
+        perivCode: item.perivCode
       };
 
       formsArray.push(formObject);
-    }
   });
 
   return formsArray;
@@ -68,7 +66,7 @@ function renderFormList(data, docList_v2) {
 
 
   const rowsTemplate = data.map((item, i) => {
-    if (item.type !== null && item.type === 'INPUT') {
+    // console.log(data);
       return (
         <div
           id={item.formid}
@@ -82,7 +80,6 @@ function renderFormList(data, docList_v2) {
           {setDocFromList(AllPeriods, item.formid)}
         </div>
       );
-    }
   });
 
   return rowsTemplate;
@@ -121,11 +118,14 @@ export default class FormList extends Component {
     this.state = {
       curDoc: null,
       curDocObj: null,
-      popupIsShow: false
+      popupIsShow: false,
+      constextPopupIsShow: false
     };
 
     this.getcurDocData = this.getcurDocData.bind(this);
     this.popupClose = this.popupClose.bind(this);
+    this.onKeydownhandler = this.onKeydownhandler.bind(this);
+    this.contextMenu = _.throttle(this.contextMenu.bind(this), 0);
   }
 
 
@@ -135,7 +135,10 @@ export default class FormList extends Component {
     this.setState({
       curDoc: dataKey,
       curDocObj: this.getCurDoc(dataKey),
-      popupIsShow: dataKey && true
+      popupIsShow: dataKey && true,
+      constextPopupIsShow: false,
+      menuPositionX: null,
+      menuPositionY: null
     });
   }
 
@@ -161,45 +164,102 @@ export default class FormList extends Component {
     }
   }
 
-
   setTitleForDocs(status, curDoc) {
     if (status === 0) {
       return (
-        <p>Документ {::this.renderLabelDependFromForm(curDoc)} уже существует,
+        <p className="popup-text">Документ
+          {::this.renderLabelDependFromForm(curDoc)} уже существует,
           открыть документ на редактирование или открыть документ на просмотр?</p>
       );
     } else if (status === 7) {
       return (
-        <p>Документ {::this.renderLabelDependFromForm(curDoc)} уже существует в статусе утверждён,
+        <p className="popup-text">Документ
+          {::this.renderLabelDependFromForm(curDoc)} уже существует в статусе утверждён,
           создать новую версию документа или открыть документ на просмотр?</p>
       );
     }
-
-    // return (
-    //   <p>Документ {this.renderLabelDependFromForm(curDoc)} отсутствует в выбранном периоде,
-    //     создать новый документ </p>
-    // )
   }
 
   setTitleForDocsDefault(curDoc) {
-    return <p>Документ {this.renderLabelDependFromForm(curDoc)} отсутствует в выбранном периоде,
+    return <p className="popup-text">Документ
+      {this.renderLabelDependFromForm(curDoc)} отсутствует в выбранном периоде,
       создать новый документ </p>;
+  }
+
+  contextssss(e) {
+    e.preventDefault();
+    e.persist();
+    this.contextMenu(e);
+    this.setState({
+      constextPopupIsShow: true
+    });
+  }
+
+  getPosition(e) {
+    let posx = 0;
+    let posy = 0;
+
+    if (e.clientX || e.nativeEvent) {
+      posx = e.clientX;
+      posy = e.nativeEvent.offsetY;
+    }
+
+    return {
+      x: posx,
+      y: posy
+    }
+  }
+
+  positionMenu(e) {
+    return this.getPosition(e);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.onKeydownhandler)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeydownhandler)
+  }
+
+  onKeydownhandler(e) {
+    const {constextPopupIsShow} = this.state;
+    if (e.keyCode === 27) {
+      if (this.state.constextPopupIsShow) {
+        this.setState({
+          constextPopupIsShow: false
+        });
+      }
+      if (this.state.popupIsShow) {
+        this.setState({
+          popupIsShow: false
+        });
+      }
+    }
   }
 
 
   contextMenu(e) {
-    const dataKey = e.target.dataset.key || e.target.parentNode.dataset.key;
-    // console.log(e);
-    console.log(dataKey);
+    let menuPosition = this.positionMenu(e);
+    const dataKey = e.target.dataset.key  || e.target.parentNode.dataset.key;
+    // console.log(dataKey);
+
+    this.setState({
+      curDoc: dataKey,
+      menuPositionX: menuPosition.x + "px",
+      menuPositionY: menuPosition.y + "px"
+    });
   }
 
   getActionCurStatus(curDocObj, curDoc) {
     if (curDocObj.status === 0) {
       return (
-        <button
+        <a
+          href={`getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016`}
+          target="_blank"
           onClick={this.EditDocs.bind(this, curDocObj)}>
           Редактировать
-        </button>
+        </a>
       );
     }
 
@@ -216,6 +276,7 @@ export default class FormList extends Component {
     console.log(curDocObj);
   }
 
+
   EditDocs(curDocObj) {
     console.log(curDocObj);
   }
@@ -225,12 +286,18 @@ export default class FormList extends Component {
     console.log(curDocObj && curDocObj);
   }
 
+  foo(curDoc, curDocObj, e) {
+    console.log(this.getCurDoc(curDoc));
+  }
 
   render() {
     const {
       curDoc,
       curDocObj,
-      popupIsShow
+      popupIsShow,
+      constextPopupIsShow,
+      menuPositionX,
+      menuPositionY
     } = this.state;
 
     const {
@@ -239,25 +306,29 @@ export default class FormList extends Component {
       doclist
     } = this.props;
 
+
+    const divStyle = {
+      left: menuPositionX,
+      top: menuPositionY
+    };
+
     const forms = generateFormList(formsList);
     const docList_v2 = createDocList(doclist);
 
     return (
       <div
-        // onContextMenu={popupIsShow && ::this.renderLabelDependFromForm(curDoc, curDocObj)}
+        onContextMenu={::this.contextssss}
         className="TBL"
         onClick={this.getcurDocData}
       >
-        {dataPeriodAndYear && renderFormList(forms, docList_v2)}
+        {dataPeriodAndYear.client && renderFormList(forms, docList_v2)}
         <div className={`popup ${popupIsShow ? 'popup-show' : null}`}>
-          <p className="popup-text">
-            {popupIsShow && !curDocObj && ::this.setTitleForDocsDefault(curDoc)}
-            {popupIsShow && curDocObj &&
+          {popupIsShow && !curDocObj && ::this.setTitleForDocsDefault(curDoc)}
+          {popupIsShow && curDocObj &&
             ::this.setTitleForDocs(curDocObj.status, curDoc)}
-          </p>
           <div className="popup-btn">
             {popupIsShow && curDocObj &&
-            this.getActionCurStatus(curDocObj, curDoc)}
+              this.getActionCurStatus(curDocObj, curDoc)}
             <button
               onClick={this.createDocs.bind(this, curDoc)}
               className={`${popupIsShow && curDocObj && 'none'}`}
@@ -272,25 +343,20 @@ export default class FormList extends Component {
           </div>
         </div>
 
-        <nav id="context-menu">
-          <ul className="context-menu__items">
-            <li className="context-menu__item">
-              <a href="#" className="context-menu__link">
-                <i className="fa fa-eye"></i> View Task
-              </a>
-            </li>
-            <li className="context-menu__item">
-              <a href="#" className="context-menu__link">
-                <i className="fa fa-edit"></i> Edit Task
-              </a>
-            </li>
-            <li className="context-menu__item">
-              <a href="#" className="context-menu__link">
-                <i className="fa fa-times"></i> Delete Task
-              </a>
-            </li>
-          </ul>
-        </nav>
+        {constextPopupIsShow &&
+          <div id="context-menu" style={divStyle}>
+            {/*<p>{curDocObj ? '' : 'Документ отсутствует'}</p>*/}
+            <button
+              onClick={this.foo.bind(this, curDoc, curDocObj)}
+              // disabled={ ? false : true}
+            >Архив
+            </button>
+            <button
+              onClick={this.foo.bind(this, curDoc, curDocObj)}
+              // disabled={? false : true}
+            >Версии
+            </button>
+          </div>}
 
       </div>
     );
