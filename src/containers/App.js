@@ -71,8 +71,8 @@ class App extends Component {
         <div>
           <p>Test links</p>
           <ul>
-            <li><a href="/getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016">Бухгалтерский баланс</a></li>
-            <li><a href="/getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016">Отчет о финансовых результатах</a></li>
+            <li><a href="/fok-ui/getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016">Бухгалтерский баланс</a></li>
+            <li><a href="/fok-ui/getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016">Отчет о финансовых результатах</a></li>
           </ul>
         </div>
       </div>

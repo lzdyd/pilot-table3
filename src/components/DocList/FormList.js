@@ -255,7 +255,7 @@ export default class FormList extends Component {
     if (curDocObj.status === 0) {
       return (
         <a
-          href={`getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016`}
+          href={`/fok-ui/getDocDataByKey?clientName=CLIENT1&type=FORM02&Q=3&year=2016`}
           target="_blank"
           onClick={this.EditDocs.bind(this, curDocObj)}>
           Редактировать

@@ -21,13 +21,12 @@ const history = syncHistoryWithStore(createBrowserHistory(), store);
 
 ReactDOM.render(
   <Provider store={ store }>
-    {/*<App />*/}
     <Router history={ history }>
       <Switch>
-        <Route exact path='/' component={ App } />
-        <Route path='/getDocDataByKey' component={ Excel }/>
-        <Route path='/getDocDataByKey' component={ Excel }/>
-        <Route render={() => <NotFound/>}/>
+        <Route exact path='/fok-ui/' component={ App } />
+        <Route path='/fok-ui/getDocDataByKey' component={ Excel }/>
+        <Route path='/fok-ui/getDocDataByKey' component={ Excel }/>
+        <Route render={ () => <NotFound/> }/>
       </Switch>
     </Router>
   </Provider>,
