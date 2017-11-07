@@ -1,0 +1,18 @@
+.table-row {
+  .table-cell-label,
+  .table-cell-rowNumber {
+    border-right: 1px solid #000;
+  }
+
+  .table-cell-label-bold {
+    font-weight: bold;
+  }
+
+  .table-cell-label.table-cell-calculated-field {
+    font-weight: bold;
+  }
+  .table-cell-label.table-cell-calculated-field-percents {
+    padding-left: 1rem;
+    font-style: italic;
+  }
+}

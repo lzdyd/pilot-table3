@@ -1,0 +1,49 @@
+.table-cell {
+  position: relative;
+  display: table-cell;
+  min-width: 80px;
+  padding: 10px;
+  font-size: 1rem;
+  border-bottom: 1px solid #000;
+
+  &__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 10px;
+    font-size: 15px;
+  }
+
+}
+
+.table-cell-data {
+  &:not(:last-child) {
+    border-right: 1px solid #ddd;
+  }
+}
+
+.table-cell-data-bold,
+.table-cell-rowNumber-total {
+  font-weight: bold;
+}
+
+.table-cell.inline-editing {
+  width: inherit;
+  padding: 8px;
+  font-size: 15px;
+}
+
+.table-cell-data.table-cell-input-field {
+  background-color: #92d050;
+}
+.table-cell-data.table-cell-calculated-field {
+  font-weight: bold;
+  background-color: #ffc000;
+}
+.table-cell-data.table-cell-calculated-field-percents {
+  font-style: italic;
+  background-color: #00bff0;
+}

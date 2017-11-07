@@ -1,0 +1,252 @@
+.form-signin {
+  display: flex;
+  flex-direction: column;
+  max-width: 250px;
+  align-items: center;
+  box-sizing: border-box;
+  border: 1px solid;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.form-signin-heading {
+  margin-top: 0;
+}
+
+.form-control {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.btn {
+  width: 100%;
+  padding: 5px;
+}
+
+.checkbox {
+  align-self: flex-start;
+}
+
+.clients-items-btn {
+  margin-bottom: 20px;
+}
+
+.clients-search {
+  margin-left: 10px;
+  flex-grow: 1;
+}
+
+.clients-search-label {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid darkgray;
+  display: flex;
+}
+
+.table {
+  display: inline-block;
+}
+
+.TBL {
+  position: relative;
+}
+
+.table-rows-item {
+  display: flex;
+}
+
+.table-header .table-header__items {
+  height: 15px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.table-header__items {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+}
+
+.table-header__items.table-header__items-fix {
+  width: 170px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  text-align: center;
+  background-color: rgba(169, 169, 169, 0.22);
+}
+
+.table-header .table-header__items-fix {
+  background-color: rgba(169, 169, 169, 0.22);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-header .table-header__items-fix:first-child {
+  border-color: white;
+  background-color: white;
+
+}
+
+.table-rows__items {
+  background-color: transparent !important;
+}
+
+.doc {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  text-align: right;
+}
+
+.doc-status {
+  float: left;
+  height: 100%;
+  width: 15px;
+}
+
+.doc-date {
+  width: 75%;
+  float: right;
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.doc-version {
+  float: left;
+  margin-left: 10px;
+}
+
+.doc-date-version {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-around;
+  width: 80px;
+  height: 100%;
+}
+
+.red-status {
+  background-color: red;
+}
+
+.green-status {
+  background-color: green;
+}
+
+.popup {
+  display: none;
+  padding: 30px;
+  box-shadow: -5px -5px 20px rgba(0, 0, 0, 0.2), 5px 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.none {
+  display: none;
+}
+
+.popup-show {
+  display: block;
+  width: 400px;
+  position: absolute;
+  top: 0;
+  background-color: white;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.popup-btn {
+  display: flex;
+  justify-content: center;
+}
+
+.popup button {
+  margin-right: 10px;
+}
+
+.popup-text {
+  margin: 0;
+  margin-bottom: 30px;
+}
+
+.report-popup {
+  width: 300px;
+  position: absolute;
+  background-color: white;
+  top: 50px;
+  left: 330px;
+  padding: 20px;
+  box-shadow: -5px -5px 20px rgba(0, 0, 0, 0.2), 5px 5px 20px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+.report-popup__text {
+  text-align: center;
+}
+
+.report-btn {
+  display: flex;
+  justify-content: center;
+}
+
+.create-report {
+  margin-right: 10px;
+}
+
+.label-year-popup {
+  display: block;
+  margin-bottom: 30px;
+  margin-left: 90px;
+}
+
+.label-year-popup input {
+  margin-left: 10px;
+  width: 50px;
+}
+
+.year-popup-error {
+  color: red;
+  text-align: center;
+  display: block;
+}
+
+.tasks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: solid 1px #dfdfdf;
+}
+
+.task:last-child {
+  border-bottom: none;
+}
+
+#context-menu {
+  display: none;
+  position: absolute;
+  z-index: 10;
+}
+
+.context-menu--active {
+  display: block !important;
+}
+
+.popup-title {
+  font-weight: bold;
+}
