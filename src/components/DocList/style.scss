@@ -363,10 +363,13 @@
     -moz-transform: rotate(900deg);
   }
 }
+
+.btn:hover:not(:disabled),
 button:hover:not(:disabled) {
   background-color: rgba(169, 169, 169, 0.54);
 }
 
+.btn,
 button,
 select {
   padding: 5px;
@@ -377,11 +380,18 @@ select {
   padding: 5px 15px;
 }
 
+.btn,
 button {
   padding: 10px;
   cursor: pointer;
   border: 0;
   border-radius: 3px;
+  background-color: #dddddd;
+  flex-grow: 0;
+  margin-right: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: #000;
 }
 
 select {

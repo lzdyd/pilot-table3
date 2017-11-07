@@ -7,7 +7,8 @@ export default function DocTable({
   dataPeriodAndYear,
   curYear,
   formsList,
-  doclist
+  doclist,
+  clientIsChecked
   }) {
 
   return (
@@ -22,6 +23,7 @@ export default function DocTable({
           formsList={formsList}
           dataPeriodAndYear={dataPeriodAndYear}
           doclist={doclist}
+          clientIsChecked={clientIsChecked}
         />
       }
     </div>
