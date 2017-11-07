@@ -91,7 +91,7 @@ export default class Excel extends Component {
 
         <div className="excel-table">
           <TableHeaders data={ modelView }/>
-{/*          {
+          {/*          {
             data.attributes.map((item) => {
               return (
                 <TableRows data={ item } value={ valuesHash[item.id].value } key={ item.id }
@@ -115,25 +115,23 @@ export default class Excel extends Component {
         </div>
       </div>
     );
-/*
-    return (
-      <div className="excel">
-        <h1>{ data.title }</h1>
-
-        <p>{ data.description }</p>
-
-        <div className="excel-table">
-          <TableHeaders data={ data.tableHeaders }/>
-          {
-            data.attributes.map((item) => {
-              return (
-                <TableRows data={ item } value={ valuesHash[`id${item.id}`].value } key={ item.id }
-                           onCellChange={ this.props.onCellChange } />
-              );
-            })
-          }
-        </div>
-      </div>
-    );*/
+    /*
+        return (
+          <div className="excel">
+            <h1>{ data.title }</h1>
+            <p>{ data.description }</p>
+            <div className="excel-table">
+              <TableHeaders data={ data.tableHeaders }/>
+              {
+                data.attributes.map((item) => {
+                  return (
+                    <TableRows data={ item } value={ valuesHash[`id${item.id}`].value } key={ item.id }
+                               onCellChange={ this.props.onCellChange } />
+                  );
+                })
+              }
+            </div>
+          </div>
+        );*/
   }
 }

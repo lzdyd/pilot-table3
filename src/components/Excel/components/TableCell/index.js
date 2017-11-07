@@ -18,7 +18,7 @@ export default class TableCell extends Component {
   }
 
   /**
-    Checks if cell is editable
+   Checks if cell is editable
    */
   componentWillMount() {
     if (!this.props.data.formula) {
@@ -135,31 +135,30 @@ export default class TableCell extends Component {
     return (
       <div className="table-cell"></div>
     );
-/*    if (this.state.editable) {
-      return (
-        <div className={ `table-cell table-cell-data ${this.props.data.formula ? '' : 'table-cell-input-field'}` }
-             onClick={ ::this.onFocus }>
-          {
-            this.state.editing ?
-              <input
-                className="table-cell__input"
-                type="text"
-                ref="input"
-                defaultValue={ this.props.value }
-                onBlur={ ::this.onBlur }
-              /> :
-              <span>{ numeral(this.props.value).format('(0,0)') }</span>
-          }
-        </div>
-      );
-    }
-
-    return (
-      <div className={ `table-cell table-cell-data ${this.props.data.formula ? 'table-cell-data-bold' : 'table-cell-input-field'}` }>
-        {
-          numeral(this.props.value).format('(0,0)')
+    /*    if (this.state.editable) {
+          return (
+            <div className={ `table-cell table-cell-data ${this.props.data.formula ? '' : 'table-cell-input-field'}` }
+                 onClick={ ::this.onFocus }>
+              {
+                this.state.editing ?
+                  <input
+                    className="table-cell__input"
+                    type="text"
+                    ref="input"
+                    defaultValue={ this.props.value }
+                    onBlur={ ::this.onBlur }
+                  /> :
+                  <span>{ numeral(this.props.value).format('(0,0)') }</span>
+              }
+            </div>
+          );
         }
-      </div>
-    );*/
+        return (
+          <div className={ `table-cell table-cell-data ${this.props.data.formula ? 'table-cell-data-bold' : 'table-cell-input-field'}` }>
+            {
+              numeral(this.props.value).format('(0,0)')
+            }
+          </div>
+        );*/
   }
 }
