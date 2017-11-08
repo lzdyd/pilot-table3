@@ -99,8 +99,6 @@ export default class ReportPeriod extends Component {
         </button>
         <button onClick={::this.changePeriodsPrev}>◄ назад</button>
         <button onClick={::this.changePeriodsOnNext}>вперед ►</button>
-        <span className="test">{periodIsChecked}</span>
-        <span>{yearIsChecked}</span>
       </div>
     );
   }

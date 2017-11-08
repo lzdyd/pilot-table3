@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import axios from 'axios';
 import { AllPeriods } from './TableHeader';
 
 function generateFormList(data) {
@@ -21,6 +22,19 @@ function generateFormList(data) {
   return formsArray;
 }
 
+function getClassDepenstatus(status) {
+  switch (status) {
+    case 0:
+      return 'red-status';
+
+    case 7:
+      return 'green-status';
+
+    default:
+      return 'dark-status';
+  }
+}
+
 
 function renderFormList(data, docList_v2) {
   function docRender(key, isExist, docList_v2) {
@@ -31,8 +45,7 @@ function renderFormList(data, docList_v2) {
         <div
           className="doc"
           data-key={key}>
-          <div className={`doc-status ${doc.status === 0 ?
-            'red-status' : 'green-status'}`}>
+          <div className={`doc-status ${getClassDepenstatus(doc.status)}`}>
           </div>
           <div className="doc-date">{doc.modify_date}</div>
           <div className="doc-version">вер.:{doc.version}</div>
@@ -66,20 +79,19 @@ function renderFormList(data, docList_v2) {
 
 
   const rowsTemplate = data.map((item, i) => {
-    // console.log(data);
-      return (
-        <div
-          id={item.formid}
-          key={i}
-          className="table-rows-item"
-        >
-          <span
-            className="table-header__items  table-header__items-fix"
-          >{item.fullName}
-          </span>
-          {setDocFromList(AllPeriods, item.formid)}
-        </div>
-      );
+    return (
+      <div
+        id={item.formid}
+        key={i}
+        className="table-rows-item"
+      >
+        <span
+          className="table-header__items  table-header__items-fix"
+        >{item.fullName}
+        </span>
+        {setDocFromList(AllPeriods, item.formid)}
+      </div>
+    );
   });
 
   return rowsTemplate;
@@ -164,26 +176,37 @@ export default class FormList extends Component {
     }
   }
 
+  getclientDescr(id) {
+    for (let item of this.props.listClient) {
+      if (item.divid === id) {
+        return item.descr;
+      }
+    }
+  }
+
   setTitleForDocs(status, curDoc) {
     if (status === 0) {
       return (
-        <p className="popup-text">Документ
-          {::this.renderLabelDependFromForm(curDoc)} уже существует,
-          открыть документ на редактирование или открыть документ на просмотр?</p>
+        <p className="popup-text">Открыть документ {::this.renderLabelDependFromForm(curDoc)} по
+          клиенту {this.getclientDescr(this.props.clientIsChecked)}?
+        </p>
       );
-    } else if (status === 7) {
+    } else if (status === 7 || status === 1) {
       return (
-        <p className="popup-text">Документ
-          {::this.renderLabelDependFromForm(curDoc)} уже существует в статусе утверждён,
-          создать новую версию документа или открыть документ на просмотр?</p>
+        <p className="popup-text">Документ {::this.renderLabelDependFromForm(curDoc)} по
+          клиенту {this.getclientDescr(this.props.clientIsChecked)} утверждён
+          или находится в архиве. Создать новую версию?
+        </p>
       );
     }
   }
 
   setTitleForDocsDefault(curDoc) {
-    return <p className="popup-text">Документ
-      {this.renderLabelDependFromForm(curDoc)} отсутствует в выбранном периоде,
-      создать новый документ </p>;
+    return (
+      <p className="popup-text">Документ {this.renderLabelDependFromForm(curDoc)} отсутствует
+        в выбранном периоде, создать новый документ
+      </p>
+    );
   }
 
   contextssss(e) {
@@ -254,7 +277,8 @@ export default class FormList extends Component {
     if (curDocObj.status === 0) {
       return (
         <a
-          href={this.EditDocs.call(this, curDocObj)}
+          className="btn"
+          href={this.EditDocs.call(this, curDocObj) + '&edit=true'}
           target="_blank"
         >
           Редактировать
@@ -264,7 +288,7 @@ export default class FormList extends Component {
 
     return (
       <a
-        href={this.EditDocs.call(this, curDocObj)}
+        href={this.EditDocs.call(this, curDocObj) + '&edit=true'}
         target="_blank"
         className="btn"
       >
@@ -285,11 +309,77 @@ export default class FormList extends Component {
 
   createDocs(curDoc, client) {
     let doc =  curDoc.split('_');
-    return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}`;
+    return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}&edit=true`;
   }
 
   foo(curDoc, curDocObj, e) {
     console.log(this.getCurDoc(curDoc));
+  }
+
+  toArchive(curDoc, e) {
+    let doc = this.getCurDoc(curDoc);
+    const { getdocList, dataPeriodAndYear } = this.props;
+    let promise = new Promise((resolve, rejected) => {
+      if (doc) {
+        axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=3`)
+          .then((response) => response.data)
+          .then(response => {
+            if (response.status === 'OK') resolve()
+          })
+          .catch((err) => console.log(err));
+      }
+    });
+
+    promise
+      .then((response) => getdocList(dataPeriodAndYear))
+      .then((response) => console.log(this.props.doclist))
+      .catch((err) => console.log(err))
+  }
+
+  toOk(curDoc, e) {
+    let doc = this.getCurDoc(curDoc);
+
+    let promise = new Promise((resolve, rejected) => {
+      // if (doc) {
+        axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=7`)
+          .then(response => response.data)
+          .then(response => {
+            if (response.status === 'OK') resolve()
+          })
+          .catch(err => console.log(err));
+      // }
+      // resolve();
+    });
+
+    promise
+      .then(response => {
+        let res = this.props.getdocList(this.props.dataPeriodAndYear);
+        console.log(res);
+      })
+      .catch(err => console.log(err))
+  }
+
+  toEdit(curDoc, e) {
+    let doc = this.getCurDoc(curDoc);
+
+    let promise = new Promise((resolve, rejected) => {
+      // if (doc) {
+      axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=0`)
+        .then(response => response.data)
+        .then(response => {
+          if (response.status === 'OK') resolve()
+        })
+        .catch(err => console.log(err));
+      // }
+      // resolve();
+    });
+
+    promise
+      .then(response => {
+        let res = this.props.getdocList(this.props.dataPeriodAndYear);
+        console.log(res);
+      })
+      .catch(err => console.log(err))
   }
 
   render() {
@@ -325,7 +415,7 @@ export default class FormList extends Component {
         onClick={this.getcurDocData}
       >
         {dataPeriodAndYear.client && renderFormList(forms, docList_v2)}
-        <div className={`popup ${popupIsShow ? 'popup-show' : null}`}>
+        <div className={`popup ${popupIsShow ? 'popup-show' : ''}`}>
           {popupIsShow && !curDocObj && ::this.setTitleForDocsDefault(curDoc)}
           {popupIsShow && curDocObj &&
             ::this.setTitleForDocs(curDocObj.status, curDoc)}
@@ -334,8 +424,7 @@ export default class FormList extends Component {
               this.getActionCurStatus(curDocObj, curDoc)}
             {popupIsShow &&
               <a
-                onClick={(e) => {console.log(e.target)}}
-                href={`${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}` }
+                href={`${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}&edit=true` }
                 target="_blank"
                 className={`btn ${popupIsShow && curDocObj && 'none'}`}
               >Создать
@@ -343,7 +432,7 @@ export default class FormList extends Component {
             }
             {popupIsShow && curDocObj &&
               <a
-                href={`${this.EditDocs.call(this, curDocObj)}&edit=true` }
+                href={`${this.EditDocs.call(this, curDocObj)}&edit=false` }
                 target="_blank"
                 className={`btn ${!curDocObj ? 'none' : null}`}
               >Просмотреть
@@ -354,18 +443,36 @@ export default class FormList extends Component {
         </div>
 
         {constextPopupIsShow &&
-          <div id="context-menu" style={divStyle}>
+          <div
+            className="menu-context"
+            id="context-menu"
+            style={divStyle}
+          >
             {/*<p>{curDocObj ? '' : 'Документ отсутствует'}</p>*/}
-            <button
-              onClick={this.foo.bind(this, curDoc, curDocObj)}
+            <a
+              className="btn"
+              onClick={this.toArchive.bind(this, curDoc)}
               // disabled={ ? false : true}
-            >Архив
-            </button>
-            <button
+            >Перевести в архив
+            </a>
+            <a
+              className="btn"
+              onClick={this.toOk.bind(this, curDoc)}
+              // disabled={ ? false : true}
+            >Перевести в УТВЕРЖДЕН
+            </a>
+            <a
+              className="btn"
+              onClick={this.toEdit.bind(this, curDoc)}
+              // disabled={ ? false : true}
+            >Перевести в Редактировать
+            </a>
+            <a
+              className="btn"
               onClick={this.foo.bind(this, curDoc, curDocObj)}
               // disabled={? false : true}
-            >Версии
-            </button>
+            >Просмотреть версии документа
+            </a>
           </div>}
 
       </div>

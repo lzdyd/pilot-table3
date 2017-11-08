@@ -8,7 +8,9 @@ export default function DocTable({
   curYear,
   formsList,
   doclist,
-  clientIsChecked
+  clientIsChecked,
+  listClient,
+  getdocList
   }) {
 
   return (
@@ -24,6 +26,8 @@ export default function DocTable({
           dataPeriodAndYear={dataPeriodAndYear}
           doclist={doclist}
           clientIsChecked={clientIsChecked}
+          listClient={listClient}
+          getdocList={getdocList}
         />
       }
     </div>

@@ -146,6 +146,10 @@
   background-color: red;
 }
 
+.dark-status {
+  background-color: darkgray;
+}
+
 .green-status {
   background-color: green;
 }
@@ -182,6 +186,7 @@
 .popup-text {
   margin: 0;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .report-popup {
@@ -241,16 +246,17 @@
   border-bottom: none;
 }
 
-#context-menu {
+.menu-context {
   width: 200px;
-  height: 100px;
   position: absolute;
   z-index: 10;
   top: 0;
   background-color: white;
-  padding: 10px;
+  padding: 20px;
   left: 520px;
-  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -5px -5px 20px rgba(0, 0, 0, 0.2), 5px 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .context-menu--active {
@@ -264,4 +270,14 @@
 .test {
   display: inline-block;
   margin-right: 20px;
+}
+
+.menu-context .btn{
+  width: auto;
+  padding: 10px;
+  margin-right: 0;
+}
+
+.menu-context .btn {
+  margin-bottom: 10px;
 }

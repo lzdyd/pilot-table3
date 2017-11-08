@@ -11,4 +11,4 @@ http://192.168.235.188:9081/prototype/getAllTypeList
 //Список клиентов
 http://192.168.235.188:9081/prototype/getClientList
 
-
+http://192.168.235.188:9081/prototype/setStatus?docid=430096&status=7
