@@ -277,7 +277,6 @@ export default class FormList extends Component {
     if (curDocObj.status === 0) {
       return (
         <a
-          className="btn"
           href={this.EditDocs.call(this, curDocObj)}
           target="_blank"
         >

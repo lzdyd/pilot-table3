@@ -87,7 +87,34 @@ export default class Excel extends Component {
 
         <p>{ periodType }</p>
 
-        <button onClick={ ::this.onSaveData }>Сохранить</button>
+        {
+          this.props.jsonData.edit ?
+            <ul className="controls-list">
+              <li>
+                <button onClick={ ::this.onSaveData }>Сохранить</button>
+              </li>
+              <li>
+                <button>Проверить</button>
+              </li>
+              <li>
+                <button>Утвердить</button>
+              </li>
+              <li>
+                <button>Загрузить данные из MS Excel</button>
+              </li>
+              <li>
+                <button>Выгрузить данные в XML</button>
+              </li>
+            </ul> :
+            <ul className="controls-list">
+              <li>
+                <button>Проверить</button>
+              </li>
+              <li>
+                <button>Выгрузить данные в XML</button>
+              </li>
+            </ul>
+        }
 
         <div className="excel-table">
           <TableHeaders data={ modelView }/>
@@ -104,7 +131,8 @@ export default class Excel extends Component {
               if (+item.rowNumber !== 1) {
                 return (
                   <TableRows row={ item } data={ modelView } dataAttrs={ this.props.data }
-                             valuesHash={ valuesHash } key={ i } onCellChange={ this.props.onCellChange }
+                             editable={ this.props.jsonData.edit } valuesHash={ valuesHash } key={ i }
+                             onCellChange={ this.props.onCellChange }
                              dataKey={ i } activeCell={ this.state.activeCell } />
                 );
               }

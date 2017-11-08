@@ -29,11 +29,10 @@ export default class TableCell extends Component {
 
     if (this.props.activeCell === this.props.dataKey) {
       this.setState({
-        editing: true
+        // editing: true
       })
     }
   }
-
 
   onFocus() {
     this.setState({ editing: true }, () => {
@@ -101,6 +100,14 @@ export default class TableCell extends Component {
         );
 
       case 'NumberField':
+        if (!this.props.editable) {
+          return (
+            <div className={ 'table-cell table-cell-data' }>
+              <span>{ numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)') }</span>
+            </div>
+          )
+        }
+
         return (
           <div className={ 'table-cell table-cell-data table-cell-input-field' }
                onClick={ ::this.onFocus }

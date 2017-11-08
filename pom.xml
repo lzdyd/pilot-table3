@@ -12,7 +12,7 @@
     </parent>
 
     <groupId>tsc</groupId>
-    <artifactId>ecm-ui</artifactId>
+    <artifactId>fok-ui</artifactId>
     <version>0.1</version>
 
     <packaging>war</packaging>

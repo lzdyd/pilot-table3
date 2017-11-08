@@ -7,6 +7,8 @@ const saveDocumentDataAPI = (data, doctype) => {
 
   updatedDoctype.attributes = updatedAttributes;
 
+  delete updatedDoctype.edit;
+
   const xhr = new XMLHttpRequest();
 
   xhr.open('POST', 'http://192.168.235.188:9081/prototype/saveDocument');

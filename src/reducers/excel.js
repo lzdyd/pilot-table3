@@ -83,7 +83,7 @@ function createValuesHash(data) {
     hash[item.id].value = null;
   });
 
-  if (data.attributes) {
+  if (data) {
     Object.values(data.attributes).forEach((item) => {
       hash[item[0]] = {
         value: item[1] || null
@@ -377,14 +377,23 @@ function createInitialData(url) {
     client: url.match(/clientName=([^&]*)/)[1],
     type: url.match(/type=([^&]*)/)[1],
     period: url.match(/Q=([^&]*)/)[1],
-    year: url.match(/year=([^&]*)/)[1]
+    year: url.match(/year=([^&]*)/)[1],
+    edit: JSON.parse(url.match(/edit=([^&]*)/)[1])
   };
 
   return data;
 }
 
 function checkData(payload) {
-  if (payload.id) return payload;
+  if (payload.response) {
+    const updatedPayload = JSON.parse(JSON.stringify(payload.response));
+
+    updatedPayload.edit = JSON.parse(payload.url.match(/edit=([^&]*)/)[1]);
+
+    return updatedPayload;
+  }
+
+  if (payload.response) return payload.response;
 
   return createInitialData(payload);
 }
@@ -412,7 +421,7 @@ export default function employeesTable(state = initialState, action) {
     case GET_DATA_SUCCESS:
       return { ...state,
         data: checkData(action.payload),
-        valuesHash: createValuesHash.call(state, action.payload),
+        valuesHash: createValuesHash.call(state, action.payload.response),
         fetching: false
       };
 
