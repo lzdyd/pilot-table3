@@ -304,12 +304,12 @@ export default class FormList extends Component {
 
 
   EditDocs({ client, period, year, type }) {
-    return `getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
+    return `/getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
   }
 
   createDocs(curDoc, client) {
     let doc =  curDoc.split('_');
-    return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}&edit=true`;
+    return `/getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}&edit=true`;
   }
 
   foo(curDoc, curDocObj, e) {

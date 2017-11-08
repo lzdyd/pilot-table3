@@ -374,6 +374,7 @@ function parseXML(payload) {
 
 function createInitialData(url) {
   const data = {
+    id: 0,
     client: url.match(/clientName=([^&]*)/)[1],
     type: url.match(/type=([^&]*)/)[1],
     period: url.match(/Q=([^&]*)/)[1],
