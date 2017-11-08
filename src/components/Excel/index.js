@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ls from 'local-storage';
 
 import TableHeaders from './components/TableHeaders';
 import TableRows from './components/TableRows';
@@ -15,6 +16,7 @@ export default class Excel extends Component {
   }
 
   onSaveData() {
+    ls.set('save', 'true');
     this.props.onSaveData();
   }
 
