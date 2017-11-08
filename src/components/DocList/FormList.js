@@ -277,7 +277,8 @@ export default class FormList extends Component {
     if (curDocObj.status === 0) {
       return (
         <a
-          href={this.EditDocs.call(this, curDocObj)}
+          className="btn"
+          href={this.EditDocs.call(this, curDocObj) + '&edit=true'}
           target="_blank"
         >
           Редактировать
@@ -287,7 +288,7 @@ export default class FormList extends Component {
 
     return (
       <a
-        href={this.EditDocs.call(this, curDocObj)}
+        href={this.EditDocs.call(this, curDocObj) + '&edit=true'}
         target="_blank"
         className="btn"
       >
@@ -308,7 +309,7 @@ export default class FormList extends Component {
 
   createDocs(curDoc, client) {
     let doc =  curDoc.split('_');
-    return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}`;
+    return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}&edit=true`;
   }
 
   foo(curDoc, curDocObj, e) {
@@ -346,6 +347,29 @@ export default class FormList extends Component {
             if (response.status === 'OK') resolve()
           })
           .catch(err => console.log(err));
+      // }
+      // resolve();
+    });
+
+    promise
+      .then(response => {
+        let res = this.props.getdocList(this.props.dataPeriodAndYear);
+        console.log(res);
+      })
+      .catch(err => console.log(err))
+  }
+
+  toEdit(curDoc, e) {
+    let doc = this.getCurDoc(curDoc);
+
+    let promise = new Promise((resolve, rejected) => {
+      // if (doc) {
+      axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=0`)
+        .then(response => response.data)
+        .then(response => {
+          if (response.status === 'OK') resolve()
+        })
+        .catch(err => console.log(err));
       // }
       // resolve();
     });
@@ -400,7 +424,7 @@ export default class FormList extends Component {
               this.getActionCurStatus(curDocObj, curDoc)}
             {popupIsShow &&
               <a
-                href={`${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}` }
+                href={`${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}&edit=true` }
                 target="_blank"
                 className={`btn ${popupIsShow && curDocObj && 'none'}`}
               >Создать
@@ -408,7 +432,7 @@ export default class FormList extends Component {
             }
             {popupIsShow && curDocObj &&
               <a
-                href={`${this.EditDocs.call(this, curDocObj)}&edit=true` }
+                href={`${this.EditDocs.call(this, curDocObj)}&edit=false` }
                 target="_blank"
                 className={`btn ${!curDocObj ? 'none' : null}`}
               >Просмотреть
@@ -436,6 +460,12 @@ export default class FormList extends Component {
               onClick={this.toOk.bind(this, curDoc)}
               // disabled={ ? false : true}
             >Перевести в УТВЕРЖДЕН
+            </a>
+            <a
+              className="btn"
+              onClick={this.toEdit.bind(this, curDoc)}
+              // disabled={ ? false : true}
+            >Перевести в Редактировать
             </a>
             <a
               className="btn"
