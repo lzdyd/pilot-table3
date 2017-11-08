@@ -138,6 +138,26 @@ function getXMLData(doctypeURL) {
   ]);
 }
 
+function getJSONData(url) {
+  return dispatch => getDocumentDataAPI(url)
+    .then((response) => {
+      if (response) {
+        dispatch({
+          type: GET_DATA_SUCCESS,
+          payload: {
+            url,
+            response: JSON.parse(response)
+          }
+        });
+      } else {
+        dispatch({
+          type: GET_DATA_SUCCESS,
+          payload: url
+        });
+      }
+    });
+}
+
 export function getDocumentData(url) {
   return ((dispatch) => {
     dispatch({
@@ -148,6 +168,19 @@ export function getDocumentData(url) {
     const doctypeURL = url.match(/type=[^&]*/g)[0].match(/\d+/g)[0];
 
     dispatch(getXMLData(doctypeURL)).then(() => {
+      dispatch(getJSONData(`http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`)).then(() => {
+        dispatch({
+          type: CALCULATE_INITIAL_DATA
+        });
+      }).catch((err) => {
+        dispatch({
+          type: GET_DATA_FAILURE,
+          payload: err
+        });
+      });
+    });
+
+/*    dispatch(getXMLData(doctypeURL)).then(() => {
       getDocumentDataAPI(`http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`)
         .then((response) => {
           if (response) {
@@ -173,7 +206,7 @@ export function getDocumentData(url) {
             payload: err
           });
         });
-    });
+    });*/
   });
 }
 

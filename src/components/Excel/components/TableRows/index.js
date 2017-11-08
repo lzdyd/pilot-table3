@@ -12,7 +12,8 @@ export default class TableRows extends Component {
 
     const currentRowHTML = currentRow.map((item, i) => {
       return (
-        <TableCell data={ item } key={ i } activeCell={ this.props.activeCell } dataKey={ this.props.dataKey}
+        <TableCell data={ item } key={ i } editable={ this.props.editable }
+                   activeCell={ this.props.activeCell } dataKey={ this.props.dataKey}
                    dataAttrs={ this.props.dataAttrs } valuesHash={ this.props.valuesHash }
                    onCellChange={ this.props.onCellChange }/>
       );

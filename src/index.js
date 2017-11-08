@@ -23,9 +23,9 @@ ReactDOM.render(
   <Provider store={ store }>
     <Router history={ history }>
       <Switch>
-        <Route exact path='/fok-ui/' component={ App } />
-        <Route path='/fok-ui/getDocDataByKey' component={ Excel }/>
-        <Route path='/fok-ui/getDocDataByKey' component={ Excel }/>
+        <Route exact path='/' component={ App } />
+        <Route path='/getDocDataByKey' component={ Excel }/>
+        <Route path='/getDocDataByKey' component={ Excel }/>
         <Route render={ () => <NotFound/> }/>
       </Switch>
     </Router>
