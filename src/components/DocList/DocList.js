@@ -250,6 +250,8 @@ export class DocList extends Component {
           formsList={formsList}
           doclist={doclist}
           clientIsChecked={clientIsChecked}
+          listClient={listClient}
+          getdocList={getdocList}
         />
       </div>
     );

@@ -49,9 +49,7 @@ export default class ListItemsClients extends Component {
       handlerOnClickHide,
       listClientFiltered
     } = this.props;
-// debugger
     const clientItems = listClientFiltered && listClientFiltered.map((item, i) => {
-      // console.log(item.divid);
       return (
         <li
           className={`clients-list__item ${isChecked === item.divid ?
