@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import axios from 'axios';
+import ls from 'local-storage';
 import { AllPeriods } from './TableHeader';
 
 function generateFormList(data) {
@@ -237,7 +238,17 @@ export default class FormList extends Component {
     return this.getPosition(e);
   }
 
+
+  storage (value) {
+    console.log('some other tab changed "foo" to ' + value);
+  }
+
   componentDidMount() {
+    ls.on('save', (value) => {
+      this.props.getdocList(this.props.dataPeriodAndYear);
+      console.log('some other tab changed "save" to ' + value);
+      ls.remove('save');
+    });
     document.addEventListener('keydown', this.onKeydownhandler)
   }
 

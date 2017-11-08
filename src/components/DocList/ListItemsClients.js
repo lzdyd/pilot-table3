@@ -19,6 +19,9 @@ export default class ListItemsClients extends Component {
   clickHandlerClientRemove() {
     this.props.handlerclientRemove();
     this.props.handlerOnClickHide();
+    this.setState({ isChecked: false });
+    this.props.filterListClients(null);
+    this.textInput.value = '';
   }
 
   handleClientChecked() {
@@ -39,6 +42,10 @@ export default class ListItemsClients extends Component {
         event.target.value.toLowerCase()) !== -1;
     });
 
+    if (event.target.value.length === 0) {
+      this.props.filterListClients(null);
+      return;
+    }
     this.props.filterListClients(updatedList);
   }
 
@@ -69,6 +76,7 @@ export default class ListItemsClients extends Component {
         <label className="clients-search-label">
           Поиск
           <input
+            ref={(input) => { this.textInput = input; }}
             type="text"
             className="clients-search"
             required
