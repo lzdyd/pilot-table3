@@ -3,6 +3,8 @@ import _ from 'lodash';
 import axios from 'axios';
 import ls from 'local-storage';
 import { AllPeriods } from './TableHeader';
+import DocHistory from './DocHistory';
+import ContextMenu from './ContextMenu';
 
 function generateFormList(data) {
   const formsArray = [];
@@ -129,13 +131,17 @@ export default class FormList extends Component {
     super(props);
 
     this.state = {
+      popupHistoryShow: false,
       curDoc: null,
       curDocObj: null,
       popupIsShow: false,
       constextPopupIsShow: false
     };
 
+    this.constextPopupIsShow = this.constextPopupIsShow.bind(this);
+    this.closePopupHistory = this.closePopupHistory.bind(this);
     this.getcurDocData = this.getcurDocData.bind(this);
+    this.getCurDoc = this.getCurDoc.bind(this);
     this.popupClose = this.popupClose.bind(this);
     this.onKeydownhandler = this.onKeydownhandler.bind(this);
     this.contextMenu = _.throttle(this.contextMenu.bind(this), 0);
@@ -153,6 +159,20 @@ export default class FormList extends Component {
       menuPositionX: null,
       menuPositionY: null
     });
+  }
+
+  componentDidMount() {
+    ls.on('save', (value) => {
+      this.props.getdocList(this.props.dataPeriodAndYear);
+      console.log('some other tab changed "save" to ' + value);
+      ls.remove('save');
+
+    });
+    document.addEventListener('keydown', this.onKeydownhandler)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeydownhandler)
   }
 
   popupClose() {
@@ -215,7 +235,8 @@ export default class FormList extends Component {
     e.persist();
     this.contextMenu(e);
     this.setState({
-      constextPopupIsShow: true
+      constextPopupIsShow: true,
+      popupHistoryShow: false
     });
   }
 
@@ -239,23 +260,6 @@ export default class FormList extends Component {
   }
 
 
-  storage (value) {
-    console.log('some other tab changed "foo" to ' + value);
-  }
-
-  componentDidMount() {
-    ls.on('save', (value) => {
-      this.props.getdocList(this.props.dataPeriodAndYear);
-      console.log('some other tab changed "save" to ' + value);
-      ls.remove('save');
-    });
-    document.addEventListener('keydown', this.onKeydownhandler)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeydownhandler)
-  }
-
   onKeydownhandler(e) {
     const { constextPopupIsShow } = this.state;
     if (e.keyCode === 27) {
@@ -276,6 +280,7 @@ export default class FormList extends Component {
   contextMenu(e) {
     let menuPosition = this.positionMenu(e);
     const dataKey = e.target.dataset.key  || e.target.parentNode.dataset.key;
+
 
     this.setState({
       curDoc: dataKey,
@@ -309,11 +314,6 @@ export default class FormList extends Component {
   }
 
 
-  // lookDocs({ client, period, year, type }) {
-  //   return `getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}&edit=true`;
-  // }
-
-
   EditDocs({ client, period, year, type }) {
     return `getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
   }
@@ -323,13 +323,30 @@ export default class FormList extends Component {
     return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}&edit=true`;
   }
 
-  foo(curDoc, curDocObj, e) {
-    console.log(this.getCurDoc(curDoc));
+  constextPopupIsShow() {
+    this.setState({ constextPopupIsShow: false });
+    console.log(this.state.constextPopupIsShow)
+  }
+
+  foo(curDoc, e) {
+    let promise = new Promise((resolve, rejected) => {
+      resolve(this.getCurDoc(curDoc));
+    });
+
+    promise
+      .then(doc => {
+        this.props.fetchDocHistory(doc);
+        this.setState({
+          popupHistoryShow: true
+        });
+      })
+      .catch(error => console.log(error));
   }
 
   toArchive(curDoc, e) {
     let doc = this.getCurDoc(curDoc);
     const { getdocList, dataPeriodAndYear } = this.props;
+
     let promise = new Promise((resolve, rejected) => {
       if (doc) {
         axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=3`)
@@ -351,15 +368,12 @@ export default class FormList extends Component {
     let doc = this.getCurDoc(curDoc);
 
     let promise = new Promise((resolve, rejected) => {
-      // if (doc) {
-        axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=7`)
-          .then(response => response.data)
-          .then(response => {
-            if (response.status === 'OK') resolve()
-          })
-          .catch(err => console.log(err));
-      // }
-      // resolve();
+      axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=7`)
+        .then(response => response.data)
+        .then(response => {
+          if (response.status === 'OK') resolve()
+        })
+        .catch(err => console.log(err));
     });
 
     promise
@@ -374,15 +388,12 @@ export default class FormList extends Component {
     let doc = this.getCurDoc(curDoc);
 
     let promise = new Promise((resolve, rejected) => {
-      // if (doc) {
       axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=0`)
         .then(response => response.data)
         .then(response => {
           if (response.status === 'OK') resolve()
         })
         .catch(err => console.log(err));
-      // }
-      // resolve();
     });
 
     promise
@@ -393,8 +404,15 @@ export default class FormList extends Component {
       .catch(err => console.log(err))
   }
 
+  closePopupHistory() {
+    this.setState({
+      popupHistoryShow: false
+    });
+  }
+
   render() {
     const {
+      popupHistoryShow,
       curDoc,
       curDocObj,
       popupIsShow,
@@ -407,13 +425,16 @@ export default class FormList extends Component {
       formsList,
       dataPeriodAndYear,
       doclist,
-      clientIsChecked
+      clientIsChecked,
+      fetchDocHistory
     } = this.props;
 
+    const positionX = menuPositionX;
+    const positionY = menuPositionY;
 
     const divStyle = {
-      left: menuPositionX,
-      top: menuPositionY
+      left: positionX,
+      top: positionY
     };
 
     const forms = generateFormList(formsList);
@@ -428,11 +449,9 @@ export default class FormList extends Component {
         {dataPeriodAndYear.client && renderFormList(forms, docList_v2)}
         <div className={`popup ${popupIsShow ? 'popup-show' : ''}`}>
           {popupIsShow && !curDocObj && ::this.setTitleForDocsDefault(curDoc)}
-          {popupIsShow && curDocObj &&
-            ::this.setTitleForDocs(curDocObj.status, curDoc)}
+          {popupIsShow && curDocObj && ::this.setTitleForDocs(curDocObj.status, curDoc)}
           <div className="popup-btn">
-            {popupIsShow && curDocObj &&
-              this.getActionCurStatus(curDocObj, curDoc)}
+            {popupIsShow && curDocObj && this.getActionCurStatus(curDocObj, curDoc)}
             {popupIsShow &&
               <a
                 href={`${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}&edit=true` }
@@ -449,43 +468,29 @@ export default class FormList extends Component {
               >Просмотреть
               </a>
             }
-            <button onClick={this.popupClose}>Отмена</button>
+            <a className="btn" onClick={this.popupClose}>Отмена</a>
           </div>
         </div>
 
         {constextPopupIsShow &&
-          <div
-            className="menu-context"
-            id="context-menu"
-            style={divStyle}
-          >
-            {/*<p>{curDocObj ? '' : 'Документ отсутствует'}</p>*/}
-            <a
-              className="btn"
-              onClick={this.toArchive.bind(this, curDoc)}
-              // disabled={ ? false : true}
-            >Перевести в архив
-            </a>
-            <a
-              className="btn"
-              onClick={this.toOk.bind(this, curDoc)}
-              // disabled={ ? false : true}
-            >Перевести в УТВЕРЖДЕН
-            </a>
-            <a
-              className="btn"
-              onClick={this.toEdit.bind(this, curDoc)}
-              // disabled={ ? false : true}
-            >Перевести в Редактировать
-            </a>
-            <a
-              className="btn"
-              onClick={this.foo.bind(this, curDoc, curDocObj)}
-              // disabled={? false : true}
-            >Просмотреть версии документа
-            </a>
-          </div>}
-
+          <ContextMenu
+            curDoc={curDoc}
+            menuPositionX={menuPositionX}
+            menuPositionY={menuPositionY}
+            toArchive={::this.toArchive}
+            toOk={::this.toOk}
+            toEdit={::this.toEdit}
+            foo={::this.foo}
+            constextPopupIsShow={::this.constextPopupIsShow}
+          />
+        }
+        {popupHistoryShow &&
+          <DocHistory
+            div={divStyle}
+            menuPositionX={menuPositionX}
+            menuPositionY={menuPositionY}
+            closePopupHistory={::this.closePopupHistory}
+          />}
       </div>
     );
   }

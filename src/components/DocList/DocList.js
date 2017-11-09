@@ -179,6 +179,7 @@ export class DocList extends Component {
 
   render() {
     const {
+      fetchDocHistory,
       getdocList,
       doclist,
       listClientFiltered,
@@ -252,6 +253,7 @@ export class DocList extends Component {
           clientIsChecked={clientIsChecked}
           listClient={listClient}
           getdocList={getdocList}
+          fetchDocHistory={fetchDocHistory}
         />
       </div>
     );

@@ -43,6 +43,33 @@ export function getDocList(options) {
   });
 }
 
+
+export function fetchDocHistory(options) {
+  // debugger;
+  const url =
+    `http://192.168.235.188:9081/prototype/getDocHistory?clientName=${options.client}&type=${options.type}&Q=${options.period}&year=${options.year}`;
+
+  return ((dispatch) => {
+    dispatch({
+      type: 'GET_DOCHISTORY_REQUEST'
+    });
+
+    axios.get(url)
+      .then((response) => {
+        dispatch({
+          type: 'GET_DOCHISTORY_SUCCESS',
+          payload: response.data
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: 'GET_DOCHISTORY_FAILURE',
+          payload: error.message
+        });
+      });
+  });
+}
+
 function getView(formNum) {
   return ((dispatch) => {
     getDocumentDataAPI(`http://localhost:8080/prototype/getDocView?docType=FORM${formNum}`)
@@ -180,7 +207,7 @@ export function getDocumentData(url) {
       });
     });
 
-/*    dispatch(getXMLData(doctypeURL)).then(() => {
+    /*    dispatch(getXMLData(doctypeURL)).then(() => {
       getDocumentDataAPI(`http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`)
         .then((response) => {
           if (response) {
@@ -206,7 +233,7 @@ export function getDocumentData(url) {
             payload: err
           });
         });
-    });*/
+    }); */
   });
 }
 

@@ -213,20 +213,39 @@
 }
 
 .label-year-popup {
-  display: block;
+  display: inline-block;
   margin-bottom: 30px;
   margin-left: 90px;
 }
 
-.label-year-popup input {
+.label-year {
+  display: inline-block;
+  margin-bottom: 30px;
+  margin-left: 0;
+  margin-right: 20px;
+}
+
+.label-year-popup input,
+.label-year input {
   margin-left: 10px;
   width: 50px;
+  text-align: center;
 }
 
 .year-popup-error {
   color: red;
   text-align: center;
-  display: block;
+  display: inline-block;
+}
+
+.year-popup {
+  position: absolute;
+  width: 350px;
+  top: 40px;
+  left: 30px;
+  color: red;
+  text-align: center;
+  display: inline-block;
 }
 
 .tasks {
@@ -280,4 +299,25 @@
 
 .menu-context .btn {
   margin-bottom: 10px;
+}
+
+.label-year input {
+  padding: 5px;
+}
+
+.docs-history {
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  top: 0;
+  background-color: white;
+  box-shadow: -5px -5px 20px rgba(0, 0, 0, 0.2), 5px 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  position: absolute;
+  top: 0;
+  right: -80px;
+  width: 40px;
+  height: 40px;
 }

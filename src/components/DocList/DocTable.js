@@ -10,7 +10,8 @@ export default function DocTable({
   doclist,
   clientIsChecked,
   listClient,
-  getdocList
+  getdocList,
+  fetchDocHistory
   }) {
 
   return (
@@ -28,6 +29,7 @@ export default function DocTable({
           clientIsChecked={clientIsChecked}
           listClient={listClient}
           getdocList={getdocList}
+          fetchDocHistory={fetchDocHistory}
         />
       }
     </div>
