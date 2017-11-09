@@ -15,7 +15,10 @@ import {
   GET_DATA_FAILURE,
   CALCULATE_INITIAL_DATA,
   CREATE_NEW_DOCUMENT,
-  UPDATE_STORE
+  UPDATE_STORE,
+  SAVE_DATA_REQUEST,
+  SAVE_DATA_SUCCESS,
+  SAVE_DATA_FAILURE
 } from '../constants/index';
 
 export function getDocList(options) {
@@ -179,34 +182,6 @@ export function getDocumentData(url) {
         });
       });
     });
-
-/*    dispatch(getXMLData(doctypeURL)).then(() => {
-      getDocumentDataAPI(`http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`)
-        .then((response) => {
-          if (response) {
-            dispatch({
-              type: GET_DATA_SUCCESS,
-              payload: JSON.parse(response)
-            });
-          } else {
-            dispatch({
-              type: GET_DATA_SUCCESS,
-              payload: url
-            });
-          }
-        })
-        .then(() => {
-          dispatch({
-            type: CALCULATE_INITIAL_DATA
-          });
-        })
-        .catch((err) => {
-          dispatch({
-            type: GET_DATA_FAILURE,
-            payload: err
-          });
-        });
-    });*/
   });
 }
 
@@ -221,5 +196,24 @@ export function updateStore(id, data) {
 }
 
 export function saveData(data, doctype) {
-  saveDocumentDataAPI(data, doctype);
+  // saveDocumentDataAPI(data, doctype);
+  return ((dispatch) => {
+    dispatch({
+      type: SAVE_DATA_REQUEST
+    });
+
+    saveDocumentDataAPI(data, doctype)
+      .then((response) => {
+        dispatch({
+          type: SAVE_DATA_SUCCESS,
+          payload: response
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: SAVE_DATA_FAILURE,
+          payload: err
+        });
+      });
+  });
 }

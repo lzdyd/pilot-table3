@@ -20,13 +20,14 @@ class App extends Component {
   }
 
   render() {
-    const { data, docType1, ReportType1, fetching, valuesHash } = this.props.excel;
+    const { data, docType1, ReportType1, fetching, valuesHash, savingDataFetching } = this.props.excel;
     const updateStore = this.props.excelActions.updateStore;
 
     return (
       <div className="main-app">
         <Excel jsonData={ data } data={ docType1 } modelView={ ReportType1 } fetching={ fetching }
-               valuesHash={ valuesHash } onCellChange={ ::this.onCellChange } onSaveData={ ::this.onSaveData } />
+               valuesHash={ valuesHash } onCellChange={ ::this.onCellChange } onSaveData={ ::this.onSaveData }
+               savingDataFetching={ savingDataFetching } />
       </div>
     );
   }

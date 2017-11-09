@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import ls from 'local-storage';
 
 import TableHeaders from './components/TableHeaders';
 import TableRows from './components/TableRows';
+import ModalBox from './components/ModalBox';
 
 import './style.scss';
 
@@ -11,13 +13,29 @@ export default class Excel extends Component {
     super(props);
 
     this.state = {
+      renderModalBox: false,
       activeCell: 1
-    }
+    };
+
+    this.mountModalBox = this.mountModalBox.bind(this);
+    this.unmountModalBox = this.unmountModalBox.bind(this);
   }
 
   onSaveData() {
     ls.set('save', 'true');
     this.props.onSaveData();
+  }
+
+  mountModalBox() {
+    this.setState({
+      renderModalBox: true
+    })
+  }
+
+  unmountModalBox() {
+    this.setState({
+      renderModalBox: false
+    })
   }
 
   render() {
@@ -83,6 +101,16 @@ export default class Excel extends Component {
 
     return (
       <div className="excel">
+        {
+          this.props.savingDataFetching.response ?
+            <ModalBox
+              state={ this.state.renderModalBox }
+              response={ this.props.savingDataFetching.response }
+              mountModalBox={ this.mountModalBox }
+              unmountModalBox={ this.unmountModalBox }
+            /> :
+            null
+        }
         <h1>{ data.name }</h1>
 
         <p>Документ заполняется в тысячах рублей</p>
@@ -93,7 +121,13 @@ export default class Excel extends Component {
           this.props.jsonData.edit ?
             <ul className="controls-list">
               <li>
-                <button onClick={ ::this.onSaveData }>Сохранить</button>
+                <button onClick={ ::this.onSaveData }>
+                  {
+                    this.props.savingDataFetching.fetching ?
+                      <span>Сохраняю...</span> :
+                      <span>Сохранить</span>
+                  }
+                </button>
               </li>
               <li>
                 <button>Проверить</button>
