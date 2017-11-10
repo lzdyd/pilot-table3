@@ -1,8 +1,11 @@
-export default function docHistory(state={
+
+const innitialState = {
   fetching: false,
   fetchingError: null,
   docs: []
-}, { type, payload }) {
+};
+
+export default function docHistory(state = innitialState, { type, payload }) {
 
   switch (type) {
     case 'GET_DOCHISTORY_REQUEST':

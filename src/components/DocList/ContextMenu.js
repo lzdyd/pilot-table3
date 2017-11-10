@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 
-export default class ContextMenu extends Component {
+export default class ContextMenu extends PureComponent {
 
   fetchingDocHistory() {
     this.props.foo(this.props.curDoc);

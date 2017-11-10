@@ -18,8 +18,8 @@ import {
   UPDATE_STORE
 } from '../constants/index';
 
-export function getDocList(options) {
-  const url = `http://192.168.235.188:9081/prototype/docList?clientName=${options.client}&Q=${options.period}&year=${options.year}`;
+export function getDocList({ client, year, period }) {
+  const url = `http://192.168.235.188:9081/prototype/docList?clientName=${client}&Q=${period}&year=${year}`;
 
   return ((dispatch) => {
     dispatch({
@@ -44,10 +44,9 @@ export function getDocList(options) {
 }
 
 
-export function fetchDocHistory(options) {
-  // debugger;
+export function fetchDocHistory({ client, type, period, year }) {
   const url =
-    `http://192.168.235.188:9081/prototype/getDocHistory?clientName=${options.client}&type=${options.type}&Q=${options.period}&year=${options.year}`;
+    `http://192.168.235.188:9081/prototype/getDocHistory?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
 
   return ((dispatch) => {
     dispatch({
@@ -55,10 +54,10 @@ export function fetchDocHistory(options) {
     });
 
     axios.get(url)
-      .then((response) => {
+      .then(({ data }) => {
         dispatch({
           type: 'GET_DOCHISTORY_SUCCESS',
-          payload: response.data
+          payload: data
         });
       })
       .catch((error) => {

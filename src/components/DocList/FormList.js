@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import axios from 'axios';
 import ls from 'local-storage';
+
+
 import { AllPeriods } from './TableHeader';
 import DocHistory from './DocHistory';
 import ContextMenu from './ContextMenu';
+
 
 function generateFormList(data) {
   const formsArray = [];
@@ -164,7 +167,7 @@ export default class FormList extends Component {
   componentDidMount() {
     ls.on('save', (value) => {
       this.props.getdocList(this.props.dataPeriodAndYear);
-      console.log('some other tab changed "save" to ' + value);
+      // console.log('some other tab changed "save" to ' + value);
       ls.remove('save');
 
     });
@@ -319,7 +322,7 @@ export default class FormList extends Component {
   }
 
   createDocs(curDoc, client) {
-    let doc =  curDoc.split('_');
+    let doc = curDoc.split('_');
     return `getDocDataByKey?clientName=${client}&type=${doc[0]}&Q=${doc[1]}&year=${doc[2]}&edit=true`;
   }
 
@@ -346,10 +349,11 @@ export default class FormList extends Component {
   toArchive(curDoc, e) {
     let doc = this.getCurDoc(curDoc);
     const { getdocList, dataPeriodAndYear } = this.props;
+    const url = `http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=3`;
 
     let promise = new Promise((resolve, rejected) => {
       if (doc) {
-        axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=3`)
+        axios.get(url)
           .then((response) => response.data)
           .then(response => {
             if (response.status === 'OK') resolve()
@@ -366,9 +370,10 @@ export default class FormList extends Component {
 
   toOk(curDoc, e) {
     let doc = this.getCurDoc(curDoc);
+    const url = `http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=7`;
 
     let promise = new Promise((resolve, rejected) => {
-      axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=7`)
+      axios.get(url)
         .then(response => response.data)
         .then(response => {
           if (response.status === 'OK') resolve()
@@ -386,9 +391,10 @@ export default class FormList extends Component {
 
   toEdit(curDoc, e) {
     let doc = this.getCurDoc(curDoc);
+    const url = `http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=0`;
 
     let promise = new Promise((resolve, rejected) => {
-      axios.get(`http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=0`)
+      axios.get(url)
         .then(response => response.data)
         .then(response => {
           if (response.status === 'OK') resolve()
@@ -410,6 +416,7 @@ export default class FormList extends Component {
     });
   }
 
+
   render() {
     const {
       popupHistoryShow,
@@ -426,7 +433,8 @@ export default class FormList extends Component {
       dataPeriodAndYear,
       doclist,
       clientIsChecked,
-      fetchDocHistory
+      fetchDocHistory,
+      dochistory
     } = this.props;
 
     const positionX = menuPositionX;
@@ -440,6 +448,12 @@ export default class FormList extends Component {
     const forms = generateFormList(formsList);
     const docList_v2 = createDocList(doclist);
 
+    const popupClass = `popup ${popupIsShow ? 'popup-show' : ''}`;
+    const popupClassNameBtnCreate = `btn ${popupIsShow && curDocObj && 'none'}`;
+    const popupClassNameBtnLook = `btn ${!curDocObj ? 'none' : ''}`;
+
+    const popupBtnHref = `${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}&edit=true`;
+
     return (
       <div
         onContextMenu={::this.contextssss}
@@ -447,16 +461,17 @@ export default class FormList extends Component {
         onClick={this.getcurDocData}
       >
         {dataPeriodAndYear.client && renderFormList(forms, docList_v2)}
-        <div className={`popup ${popupIsShow ? 'popup-show' : ''}`}>
+        <div className={popupClass}>
           {popupIsShow && !curDocObj && ::this.setTitleForDocsDefault(curDoc)}
           {popupIsShow && curDocObj && ::this.setTitleForDocs(curDocObj.status, curDoc)}
+
           <div className="popup-btn">
             {popupIsShow && curDocObj && this.getActionCurStatus(curDocObj, curDoc)}
             {popupIsShow &&
               <a
-                href={`${popupIsShow && this.createDocs.call(this, curDoc, clientIsChecked)}&edit=true` }
+                href={popupBtnHref}
                 target="_blank"
-                className={`btn ${popupIsShow && curDocObj && 'none'}`}
+                className={popupClassNameBtnCreate}
               >Создать
               </a>
             }
@@ -464,11 +479,15 @@ export default class FormList extends Component {
               <a
                 href={`${this.EditDocs.call(this, curDocObj)}&edit=false` }
                 target="_blank"
-                className={`btn ${!curDocObj ? 'none' : null}`}
+                className={popupClassNameBtnLook}
               >Просмотреть
               </a>
             }
-            <a className="btn" onClick={this.popupClose}>Отмена</a>
+            <a
+              className="btn"
+              onClick={this.popupClose}
+            >Отмена
+            </a>
           </div>
         </div>
 
@@ -489,6 +508,7 @@ export default class FormList extends Component {
             div={divStyle}
             menuPositionX={menuPositionX}
             menuPositionY={menuPositionY}
+            dochistory={dochistory}
             closePopupHistory={::this.closePopupHistory}
           />}
       </div>

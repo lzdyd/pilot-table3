@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
-export default class ListItemsClients extends Component {
+export default class ListItemsClients extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -56,11 +56,15 @@ export default class ListItemsClients extends Component {
       handlerOnClickHide,
       listClientFiltered
     } = this.props;
+
+    const clientClassName = `clients ${clientShow ? 'show' : ''}`;
+
     const clientItems = listClientFiltered && listClientFiltered.map((item, i) => {
+      const clientListItemClassName = `clients-list__item ${isChecked === item.divid ? 'is-checked-client' : ''}`;
+
       return (
         <li
-          className={`clients-list__item ${isChecked === item.divid ?
-            'is-checked-client' : ''}`}
+          className={clientListItemClassName}
           key={ i }
           id={item.id}
           data-descr={item.divid}
@@ -72,7 +76,7 @@ export default class ListItemsClients extends Component {
     });
 
     return (
-      <div className={`clients ${clientShow ? 'show' : ''}`}>
+      <div className={clientClassName}>
         <label className="clients-search-label">
           Поиск
           <input

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import './style.scss';
 
-export default class ReportPeriod extends Component {
+export default class ReportPeriod extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -90,6 +90,7 @@ export default class ReportPeriod extends Component {
       );
     });
 
+    const labalYearClassName = '' + (!isChecked ? 'error-border' : '');
 
     return (
       <div className='report-period'>
@@ -110,9 +111,9 @@ export default class ReportPeriod extends Component {
         <label className="label-year">
           Год
           <input
-            ref={input => this.inputText = input}
-            className={'' + (!isChecked ? 'error-border' : '')}
             onBlur={this.isCheckAnalyticYear}
+            ref={input => this.inputText = input}
+            className={labalYearClassName}
             defaultValue={yearIsChecked}
             onChange={handlerYearIsChecked}
             type="text"

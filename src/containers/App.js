@@ -61,6 +61,8 @@ class App extends Component {
     } = this.state;
 
     const { doclist, dochistory } = this.props;
+// debugger;
+    // console.log(this.props.dochistory);
 
     return (
       <div className="main-app">

@@ -9,8 +9,8 @@ const initialState = {
   docs: null
 };
 
-export default function doclist(state = initialState, action) {
-  switch (action.type) {
+export default function doclist(state = initialState, { type, payload }) {
+  switch (type) {
     case GET_DOCLIST_REQUEST:
       return {
         ...state,
@@ -20,14 +20,14 @@ export default function doclist(state = initialState, action) {
     case GET_DOCLIST_SUCCESS:
       return {
         ...state,
-        docs: action.payload,
+        docs: payload,
         fetching: false
       };
 
     case GET_DOCLIST_FAILURE:
       return {
         ...state,
-        error: action.payload,
+        error: payload,
         fetching: false
       };
 
