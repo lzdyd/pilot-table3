@@ -50,8 +50,19 @@ class App extends Component {
   }
 
   render() {
-    const { getDocList } = this.props.excelActions;
-    const { listClient, listClientFiltered, formsList } = this.state;
+    const {
+      getDocList,
+      fetchDocHistory
+    } = this.props.excelActions;
+    const {
+      listClient,
+      listClientFiltered,
+      formsList
+    } = this.state;
+
+    const { doclist, dochistory } = this.props;
+// debugger;
+    // console.log(this.props.dochistory);
 
     return (
       <div className="main-app">
@@ -61,8 +72,10 @@ class App extends Component {
             fetchingClientsAndForms={::this.fetchingClientsAndForms}
           /> :
           <DocList
+            fetchDocHistory={fetchDocHistory}
             getdocList={ getDocList }
-            doclist={ this.props.doclist }
+            doclist={ doclist }
+            dochistory={dochistory}
             filterListClients={::this.filterListClients}
             listClient={listClient}
             listClientFiltered={listClientFiltered}
@@ -75,7 +88,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    doclist: state.doclist.docs
+    doclist: state.doclist.docs,
+    dochistory: state.docHistory.docs
   };
 };
 

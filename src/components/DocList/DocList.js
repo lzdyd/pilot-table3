@@ -179,12 +179,14 @@ export class DocList extends Component {
 
   render() {
     const {
+      fetchDocHistory,
       getdocList,
       doclist,
       listClientFiltered,
       listClient,
       formsList,
-      filterListClients
+      filterListClients,
+      dochistory
     } = this.props;
 
     const {
@@ -252,6 +254,8 @@ export class DocList extends Component {
           clientIsChecked={clientIsChecked}
           listClient={listClient}
           getdocList={getdocList}
+          fetchDocHistory={fetchDocHistory}
+          dochistory={dochistory}
         />
       </div>
     );

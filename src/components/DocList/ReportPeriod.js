@@ -1,27 +1,39 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import './style.scss';
 
-export default class ReportPeriod extends Component {
+export default class ReportPeriod extends PureComponent {
+  constructor(props) {
+    super(props);
 
-   getYear() {
-    const currentTime = new Date();
-    const curYear = currentTime.getFullYear();
-    const limitYear = 1996;
-    const periods = [];
+    this.state = {
+      isChecked: false
+    };
 
-    for (let i = +curYear; i >= limitYear; i--) {
-      periods.push(
-        <option
-          value={i}
-          key={i}
-        >{i}
-        </option>
-      );
+    this.isCheckAnalyticYear = this.isCheckAnalyticYear.bind(this);
+  }
+
+  componentDidMount () {
+    this.isCheckAnalyticYear();
+  }
+
+  isCheckAnalyticYear() {
+    const inputValue = this.inputText.value;
+    console.log(inputValue);
+
+    if (inputValue >= 1996 && inputValue <= 2017) {
+      this.setState({
+        isChecked: true
+      });
+
+      return false;
     }
 
-    return periods;
+    this.setState({
+      isChecked: false
+    });
   }
+
 
   getDocs() {
     const dataObjForRequst = {
@@ -57,6 +69,8 @@ export default class ReportPeriod extends Component {
   }
 
   render () {
+    const { isChecked } = this.state;
+
     const {
       isPeriod,
       handlerPeriodIsChecked,
@@ -76,6 +90,8 @@ export default class ReportPeriod extends Component {
       );
     });
 
+    const labalYearClassName = '' + (!isChecked ? 'error-border' : '');
+
     return (
       <div className='report-period'>
         Отчетный период:
@@ -86,15 +102,26 @@ export default class ReportPeriod extends Component {
         >
           { perodItemsTemplate }
         </select>
-        <select
-          defaultValue={yearIsChecked}
-          onChange={handlerYearIsChecked}
-        >
-          { this.getYear() }
-        </select>
+        {
+          !isChecked &&
+            <span className="year-popup">
+                Поле "Год" должно быть в диапазоне от 1996 года и не позже текущего года!
+            </span>
+        }
+        <label className="label-year">
+          Год
+          <input
+            onBlur={this.isCheckAnalyticYear}
+            ref={input => this.inputText = input}
+            className={labalYearClassName}
+            defaultValue={yearIsChecked}
+            onChange={handlerYearIsChecked}
+            type="text"
+          />
+        </label>
         <button
           onClick={::this.getDocs}
-          disabled={!clientIsChecked}
+          disabled={!clientIsChecked && isChecked}
         >применить ✔
         </button>
         <button onClick={::this.changePeriodsPrev}>◄ назад</button>

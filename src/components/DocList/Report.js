@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
-export default class Report extends Component {
+export default class Report extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -43,7 +43,7 @@ export default class Report extends Component {
           isChecked &&
           <span className="year-popup-error">
               Поле "Год" должно быть в диапазоне от 1996 года и не позже текущего года!
-          </span>
+            </span>
         }
         <label className="label-year-popup">
           Год

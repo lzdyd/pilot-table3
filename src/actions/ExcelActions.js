@@ -21,8 +21,8 @@ import {
   SAVE_DATA_FAILURE
 } from '../constants/index';
 
-export function getDocList(options) {
-  const url = `http://192.168.235.188:9081/prototype/docList?clientName=${options.client}&Q=${options.period}&year=${options.year}`;
+export function getDocList({ client, year, period }) {
+  const url = `http://192.168.235.188:9081/prototype/docList?clientName=${client}&Q=${period}&year=${year}`;
 
   return ((dispatch) => {
     dispatch({
@@ -41,6 +41,32 @@ export function getDocList(options) {
         dispatch({
           type: GET_DOCLIST_FAILURE,
           payload: err
+        });
+      });
+  });
+}
+
+
+export function fetchDocHistory({ client, type, period, year }) {
+  const url =
+    `http://192.168.235.188:9081/prototype/getDocHistory?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
+
+  return ((dispatch) => {
+    dispatch({
+      type: 'GET_DOCHISTORY_REQUEST'
+    });
+
+    axios.get(url)
+      .then(({ data }) => {
+        dispatch({
+          type: 'GET_DOCHISTORY_SUCCESS',
+          payload: data
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: 'GET_DOCHISTORY_FAILURE',
+          payload: error.message
         });
       });
   });
@@ -182,6 +208,34 @@ export function getDocumentData(url) {
         });
       });
     });
+
+    /*    dispatch(getXMLData(doctypeURL)).then(() => {
+      getDocumentDataAPI(`http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`)
+        .then((response) => {
+          if (response) {
+            dispatch({
+              type: GET_DATA_SUCCESS,
+              payload: JSON.parse(response)
+            });
+          } else {
+            dispatch({
+              type: GET_DATA_SUCCESS,
+              payload: url
+            });
+          }
+        })
+        .then(() => {
+          dispatch({
+            type: CALCULATE_INITIAL_DATA
+          });
+        })
+        .catch((err) => {
+          dispatch({
+            type: GET_DATA_FAILURE,
+            payload: err
+          });
+        });
+    }); */
   });
 }
 

@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "axios": "^0.17.0",
+    "babel-polyfill": "^6.26.0",
     "express": "^4.15.4",
     "local-storage": "^1.4.2",
     "lodash": "^4.17.4",
