@@ -215,7 +215,7 @@ export default class FormList extends Component {
           клиенту {this.getclientDescr(this.props.clientIsChecked)}?
         </p>
       );
-    } else if (status === 7 || status === 1) {
+    } else if (status === 7 || status === 3) {
       return (
         <p className="popup-text">Документ {::this.renderLabelDependFromForm(curDoc)} по
           клиенту {this.getclientDescr(this.props.clientIsChecked)} утверждён
