@@ -15,7 +15,10 @@ import {
   GET_DATA_FAILURE,
   CALCULATE_INITIAL_DATA,
   CREATE_NEW_DOCUMENT,
-  UPDATE_STORE
+  UPDATE_STORE,
+  SAVE_DATA_REQUEST,
+  SAVE_DATA_SUCCESS,
+  SAVE_DATA_FAILURE
 } from '../constants/index';
 
 export function getDocList({ client, year, period }) {
@@ -247,5 +250,24 @@ export function updateStore(id, data) {
 }
 
 export function saveData(data, doctype) {
-  saveDocumentDataAPI(data, doctype);
+  // saveDocumentDataAPI(data, doctype);
+  return ((dispatch) => {
+    dispatch({
+      type: SAVE_DATA_REQUEST
+    });
+
+    saveDocumentDataAPI(data, doctype)
+      .then((response) => {
+        dispatch({
+          type: SAVE_DATA_SUCCESS,
+          payload: response
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: SAVE_DATA_FAILURE,
+          payload: err
+        });
+      });
+  });
 }

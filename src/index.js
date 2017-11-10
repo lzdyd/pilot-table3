@@ -25,7 +25,6 @@ ReactDOM.render(
       <Switch>
         <Route exact path='/' component={ App } />
         <Route path='/getDocDataByKey' component={ Excel }/>
-        <Route path='/getDocDataByKey' component={ Excel }/>
         <Route render={ () => <NotFound/> }/>
       </Switch>
     </Router>

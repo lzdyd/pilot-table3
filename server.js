@@ -3,6 +3,8 @@ const webpack = require('webpack');
 const express = require('express');
 const config = require('./webpack.config');
 
+const fs = require('fs');
+
 const app = express();
 const compiler = webpack(config);
 
@@ -42,6 +44,11 @@ app.get('/doctype_view_balans_edit.xml', (req, res) => {
 
 app.get('/dataTable.json', (req, res) => {
   res.sendFile(path.join(__dirname, 'docs/dataTable.json'));
+});
+
+app.post('/savejson', (req) => {
+  console.log(req.body);
+  fs.writeFile('save.json', JSON.stringify(req.body), 'UTF-8');
 });
 
 app.get('/*', (req, res) => {

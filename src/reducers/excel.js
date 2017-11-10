@@ -6,19 +6,28 @@ import {
   GET_DATA_FAILURE,
   CALCULATE_INITIAL_DATA,
   CREATE_NEW_DOCUMENT,
-  UPDATE_STORE
+  UPDATE_STORE,
+  SAVE_DATA_REQUEST,
+  SAVE_DATA_SUCCESS,
+  SAVE_DATA_FAILURE
 } from '../constants/index';
 
 /**
  * @description Creates initial state for excel table
- * @property { object }  data      - Contains excel data
- * @property { boolean } fetching  - If true, inform that data is being fetched
- * @property { Object } valuesHash - Hash table of received attributes
+ * @property { object }  data              - Contains excel data
+ * @property { boolean } fetching          - If true, inform that data is being fetched
+ * @property { Object } savingDataFetching - If data is being saved, fetching key is stated to true. Response key
+ *                                           contains server's response
+ * @property { Object } valuesHash         - Hash table of received attributes
  */
 
 const initialState = {
   data: {},
   fetching: false,
+  savingDataFetching: {
+    fetching: false,
+    response: null
+  },
   valuesHash: {}
 };
 
@@ -374,6 +383,8 @@ function parseXML(payload) {
 
 function createInitialData(url) {
   const data = {
+    status: 0,
+    version: 1,
     client: url.match(/clientName=([^&]*)/)[1],
     type: url.match(/type=([^&]*)/)[1],
     period: url.match(/Q=([^&]*)/)[1],
@@ -436,6 +447,15 @@ export default function employeesTable(state = initialState, action) {
 
     case UPDATE_STORE:
       return { ...state, valuesHash: updateStore.call(state, action.payload) };
+
+    case SAVE_DATA_REQUEST:
+      return { ...state, savingDataFetching: { fetching: true, response: null } };
+
+    case SAVE_DATA_SUCCESS:
+      return { ...state, savingDataFetching: { fetching: false, response: action.payload } };
+
+    case SAVE_DATA_FAILURE:
+      return { ...state, savingDataFetching: { fetching: false, response: action.payload } };
 
     default:
       return state;

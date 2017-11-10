@@ -1,6 +1,7 @@
 .gitignore
 .idea
 node_modules
+target
 old
 docs
 api-info.js
