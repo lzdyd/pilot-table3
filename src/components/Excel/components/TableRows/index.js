@@ -12,24 +12,19 @@ export default class TableRows extends Component {
 
     const currentRowHTML = currentRow.map((item, i) => {
       return (
-        <TableCell data={ item } key={ i } editable={ this.props.editable }
-                   activeCell={ this.props.activeCell } dataKey={ this.props.dataKey}
-                   dataAttrs={ this.props.dataAttrs } valuesHash={ this.props.valuesHash }
-                   onCellChange={ this.props.onCellChange }/>
+        <TableCell
+          data={ item }
+          key={ i }
+          editable={ this.props.editable }
+          activeCell={ this.props.activeCell }
+          dataKey={ this.props.dataKey}
+          dataAttrs={ this.props.dataAttrs }
+          valuesHash={ this.props.valuesHash }
+          onCellChange={ this.props.onCellChange }
+        />
       );
     });
 
-    // return (
-    //   <div className="table-row">
-    //     <div className={ `table-cell table-cell-label ${this.props.data.formula ? 'table-cell-label-bold' : ''}` }>
-    //       { this.props.data.label }
-    //     </div>
-    //     <div className={ `table-cell table-cell-label ${this.props.data.formula ? 'table-cell-label-bold' : ''}` }>
-    //       { this.props.data.id }
-    //     </div>
-    //     <TableCell data={ this.props.data } value={ this.props.value } onCellChange={ this.props.onCellChange } />
-    //   </div>
-    // );
     return (
       <div className="table-row">
         { currentRowHTML }

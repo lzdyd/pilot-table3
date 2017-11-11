@@ -25,9 +25,16 @@ class App extends Component {
 
     return (
       <div className="main-app">
-        <Excel jsonData={ data } data={ docType1 } modelView={ ReportType1 } fetching={ fetching }
-               valuesHash={ valuesHash } onCellChange={ ::this.onCellChange } onSaveData={ ::this.onSaveData }
-               savingDataFetching={ savingDataFetching } />
+        <Excel
+          jsonData={ data }
+          data={ docType1 }
+          modelView={ ReportType1 }
+          fetching={ fetching }
+          valuesHash={ valuesHash }
+          onCellChange={ ::this.onCellChange }
+          onSaveData={ ::this.onSaveData }
+          savingDataFetching={ savingDataFetching }
+        />
       </div>
     );
   }

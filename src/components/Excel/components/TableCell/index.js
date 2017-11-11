@@ -13,6 +13,8 @@ export default class TableCell extends Component {
       editing: false
     };
 
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
     this.getLabel = this.getLabel.bind(this);
     this.getRowNumber = this.getRowNumber.bind(this);
   }
@@ -30,7 +32,7 @@ export default class TableCell extends Component {
     if (this.props.activeCell === this.props.dataKey) {
       this.setState({
         // editing: true
-      })
+      });
     }
   }
 
@@ -105,13 +107,14 @@ export default class TableCell extends Component {
             <div className={ 'table-cell table-cell-data' }>
               <span>{ numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)') }</span>
             </div>
-          )
+          );
         }
 
         return (
-          <div className={ 'table-cell table-cell-data table-cell-input-field' }
-               onClick={ ::this.onFocus }
-               data-key={ this.props.dataKey }>
+          <div
+            className={ 'table-cell table-cell-data table-cell-input-field' }
+            onClick={ this.onFocus }
+            data-key={ this.props.dataKey }>
             {
               this.state.editing ?
                 <input
@@ -119,7 +122,7 @@ export default class TableCell extends Component {
                   type="text"
                   ref="input"
                   defaultValue={ this.props.valuesHash[this.props.data.docField].value }
-                  onBlur={ ::this.onBlur }
+                  onBlur={ this.onBlur }
                 /> :
                 <span>{ numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)') }</span>
             }
@@ -142,30 +145,5 @@ export default class TableCell extends Component {
     return (
       <div className="table-cell"></div>
     );
-    /*    if (this.state.editable) {
-          return (
-            <div className={ `table-cell table-cell-data ${this.props.data.formula ? '' : 'table-cell-input-field'}` }
-                 onClick={ ::this.onFocus }>
-              {
-                this.state.editing ?
-                  <input
-                    className="table-cell__input"
-                    type="text"
-                    ref="input"
-                    defaultValue={ this.props.value }
-                    onBlur={ ::this.onBlur }
-                  /> :
-                  <span>{ numeral(this.props.value).format('(0,0)') }</span>
-              }
-            </div>
-          );
-        }
-        return (
-          <div className={ `table-cell table-cell-data ${this.props.data.formula ? 'table-cell-data-bold' : 'table-cell-input-field'}` }>
-            {
-              numeral(this.props.value).format('(0,0)')
-            }
-          </div>
-        );*/
   }
 }

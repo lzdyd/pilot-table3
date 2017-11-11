@@ -1,64 +1,39 @@
 const path = require('path');
 const webpack = require('webpack');
 const express = require('express');
-const config = require('./webpack.config');
 
-const fs = require('fs');
+const isDev = (process.env.NODE_ENV !== 'production');
 
 const app = express();
-const compiler = webpack(config);
 
-app.use(require('webpack-dev-middleware')(compiler, {
-  publicPath: config.output.publicPath
-}));
+if (!isDev) {
+  const config = require('./webpack.config.production');
+  const compiler = webpack(config);
 
-app.use(require('webpack-hot-middleware')(compiler));
+  compiler.run((err, stats) => {
+    console.log(`Bundle is build. Path to the bundle: ${config.output.path}`);
+  });
+}
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
-});
+if (isDev) {
+  const config = require('./webpack.config');
+  const compiler = webpack(config);
 
-app.get('/doc-data_opu.json', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs/doc-data_opu.json'));
-});
+  app.use(require('webpack-dev-middleware')(compiler, {
+    publicPath: config.output.publicPath
+  }));
 
-app.get('/doctype_opu.xml', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs/doctype_opu.xml'));
-});
+  app.use(require('webpack-hot-middleware')(compiler));
 
-app.get('/doctype_view_opu.xml', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs/doctype_view_opu.xml'));
-});
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+  });
 
-app.get('/doc-data_balance.json', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs/doc-data_balance.json'));
-});
+  app.listen(3000, (err) => {
+    if (err) {
+      return console.error(err);
+    }
 
-app.get('/doctype_balans.xml', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs/doctype_balans.xml'));
-});
-
-app.get('/doctype_view_balans_edit.xml', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs/doctype_view_balans_edit.xml'));
-});
-
-app.get('/dataTable.json', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs/dataTable.json'));
-});
-
-app.post('/savejson', (req) => {
-  console.log(req.body);
-  fs.writeFile('save.json', JSON.stringify(req.body), 'UTF-8');
-});
-
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
-});
-
-app.listen(3000, (err) => {
-  if (err) {
-    return console.error(err);
-  }
-
-  console.log('Listening at http://localhost:3000/');
-});
+    console.log('Listening at http://localhost:3000/');
+  });
+}

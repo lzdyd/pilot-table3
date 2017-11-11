@@ -14,7 +14,9 @@ module.exports = {
   },
   "globals": {
     "window": true,
-    "document": true
+    "document": true,
+    "NODE_ENV": true,
+    "CONTEXT": true
   },
   "rules": {
     "skipBlankLines": 0,
