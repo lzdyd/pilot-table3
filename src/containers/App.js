@@ -16,8 +16,13 @@ class App extends Component {
       formsList: null,
       listClient: null,
       listClientFiltered: null,
-      invalid: false
+      invalid: false,
+      isAuthorized: false
     };
+  }
+
+  componentDidMount() {
+    this.fetchingClientsAndForms();
   }
 
   fetchingClientsAndForms() {
@@ -27,13 +32,20 @@ class App extends Component {
     ])
       .then(axios.spread((forms, clients) => {
         this.setState({
+          isAuthorized: true,
           formsList: forms.data,
           listClient: clients.data,
           // listClientFiltered: clients.data
         });
       }))
       .catch((error) => {
-        console.log(error);
+        let response = error.response;
+        if (response.status === 401 && response.statusText === "Unauthorized") {
+          this.setState({
+            isAuthorized: false
+          });
+          console.log(response);
+        }
       });
   }
 
@@ -57,30 +69,27 @@ class App extends Component {
     const {
       listClient,
       listClientFiltered,
-      formsList
+      formsList,
+      isAuthorized
     } = this.state;
 
     const { doclist, dochistory } = this.props;
-// debugger;
-    // console.log(this.props.dochistory);
 
     return (
       <div className="main-app">
-        {!this.state.invalid ?
-          <Authentication
-            onClick={::this.onClickHandler.bind(this)}
-            fetchingClientsAndForms={::this.fetchingClientsAndForms}
-          /> :
-          <DocList
-            fetchDocHistory={fetchDocHistory}
-            getdocList={ getDocList }
-            doclist={ doclist }
-            dochistory={dochistory}
-            filterListClients={::this.filterListClients}
-            listClient={listClient}
-            listClientFiltered={listClientFiltered}
-            formsList={formsList}
-          /> }
+        {
+          isAuthorized &&
+            <DocList
+              fetchDocHistory={fetchDocHistory}
+              getdocList={ getDocList }
+              doclist={ doclist }
+              dochistory={dochistory}
+              filterListClients={::this.filterListClients}
+              listClient={listClient}
+              listClientFiltered={listClientFiltered}
+              formsList={formsList}
+            />
+        }
       </div>
     );
   }
