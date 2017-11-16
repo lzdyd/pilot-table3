@@ -86,16 +86,18 @@ function getDependencies(formula) {
  */
 function createValuesHash(data) {
   const hash = {};
-
+  // debugger;
   Object.values(this.docType1.attributes).forEach((item) => {
     hash[item.id] = {};
     hash[item.id].value = null;
   });
 
   if (data) {
-    Object.values(data.attributes).forEach((item) => {
-      hash[item[0]] = {
-        value: item[1] || null
+    // debugger
+    Object.values(data.data).forEach((item) => {
+      // debugger;
+      hash[item.fieldName] = {
+        value: item.dbvalue || null
       };
     });
   }
