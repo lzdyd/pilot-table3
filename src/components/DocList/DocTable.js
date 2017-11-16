@@ -13,8 +13,7 @@ export default function DocTable({
   getdocList,
   fetchDocHistory,
   dochistory
-  }) {
-
+}) {
   return (
     <div className="table">
       <TableHeader

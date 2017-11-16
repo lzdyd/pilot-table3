@@ -9,16 +9,18 @@ import DocHistory from './DocHistory';
 import ContextMenu from './ContextMenu';
 
 
+
+
 function generateFormList(data) {
   const formsArray = [];
-
+  
   data.forEach((item) => {
-    const formid = item.formid;
+    const formid = item.formCode;
 
       const formObject = {
-        formid: item.formid,
+        formid: item.formCode,
         fullName: item.fullName,
-        type: item.formType,
+        type: item.DocType,
         perivCode: item.perivCode
       };
 
@@ -43,6 +45,7 @@ function getClassDepenstatus(status) {
 
 
 function renderFormList(data, docList_v2) {
+  // debugger;
   function docRender(key, isExist, docList_v2) {
     if (docList_v2.hasOwnProperty(key)) {
       isExist = true;
@@ -63,6 +66,8 @@ function renderFormList(data, docList_v2) {
 
   function setDocFromList(period, formId) {
     const arr = [];
+
+    // console.log(formId);
 
     for (let i = 0; i < period.length; i++) {
       const key = `${formId}_${period[i].period}_${period[i].year}`;
@@ -216,12 +221,12 @@ export default class FormList extends Component {
         </p>
       );
     } else if (status === 7 || status === 3) {
-      return (
-        <p className="popup-text">Документ {::this.renderLabelDependFromForm(curDoc)} по
-          клиенту {this.getclientDescr(this.props.clientIsChecked)} утверждён
-          или находится в архиве. Создать новую версию?
-        </p>
-      );
+        return (
+          <p className="popup-text">Документ {::this.renderLabelDependFromForm(curDoc)} по
+            клиенту {this.getclientDescr(this.props.clientIsChecked)} утверждён
+            или находится в архиве. Создать новую версию?
+          </p>
+        );
     }
   }
 
@@ -437,6 +442,8 @@ export default class FormList extends Component {
       dochistory
     } = this.props;
 
+    console.log(dataPeriodAndYear);
+
     const positionX = menuPositionX;
     const positionY = menuPositionY;
 
@@ -447,6 +454,9 @@ export default class FormList extends Component {
 
     const forms = generateFormList(formsList);
     const docList_v2 = createDocList(doclist);
+
+    console.log(forms);
+
 
     const popupClass = `popup ${popupIsShow ? 'popup-show' : ''}`;
     const popupClassNameBtnCreate = `btn ${popupIsShow && curDocObj && 'none'}`;
