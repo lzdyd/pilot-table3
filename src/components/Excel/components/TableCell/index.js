@@ -34,6 +34,7 @@ export default class TableCell extends Component {
     }
   }
 
+
   onFocus() {
     this.setState({ editing: true }, () => {
       this.refs.input.focus();
@@ -44,6 +45,8 @@ export default class TableCell extends Component {
     this.setState({
       editing: false
     });
+
+    console.log(this.refs.input.value);
 
     if (+this.refs.input.value !== this.props.value) {
       const id = this.props.data.docField;
@@ -65,6 +68,80 @@ export default class TableCell extends Component {
 
   getRowNumber() {
     return this.props.data.cellText;
+  }
+
+  handlePaste (e) {
+    let clipboardData;
+    let pastedData;
+    let len;
+    let target = e.target.parentNode.parentNode;
+    let arrValueTarget = [];
+
+    e.stopPropagation();
+    e.preventDefault();
+
+    // Get pasted data via clipboard API
+    clipboardData = e.clipboardData || window.clipboardData;
+    pastedData = clipboardData.getData('Text').split(/\n/).map((item) => {
+      let num = item.trim().replace(/\,/g, '.').split('');
+      num.splice(num.indexOf('.'), 4);
+
+      let pp1 = new RegExp("\\(", "g");
+      let pp2 = new RegExp("\\)", "g");
+
+      if (num.indexOf(' ') !== -1) {
+        if (num.indexOf('(') !== -1) {
+          num.splice(num.indexOf('('), 1);
+          num.splice(num.indexOf(')'), 1);
+
+          return -num.join('').replace(' ', '');
+        }
+        return num.join('').replace(' ', '');
+      }
+
+      if (num.indexOf('(') !== -1) {
+        num.splice(num.indexOf('('), 1);
+        num.splice(num.indexOf(')'), 1);
+
+        return -num.join('');
+      }
+
+        return num.join('');
+    });
+
+    pastedData.pop();
+    len = pastedData.length - 1;
+
+    arrValueTarget.push('F' + target.childNodes[1].innerHTML);
+
+    let i = 0;
+
+    while (true) {
+      if (!target.nextSibling.childNodes[2].dataset.key) {
+        target = target.nextSibling;
+        continue;
+      }
+
+      arrValueTarget.push('F' + target.nextSibling.childNodes[1].innerHTML);
+      target = target.nextSibling;
+
+      i++;
+
+      if (i === len) {
+        break;
+      }
+    }
+
+    let mapValue = [];
+
+    for (let i = 0; i < arrValueTarget.length; i++) {
+      mapValue.push({
+        id: arrValueTarget[i],
+        value: +pastedData[i]
+      });
+    }
+
+    return this.props.pasteData(mapValue);
   }
 
   render() {
@@ -115,6 +192,7 @@ export default class TableCell extends Component {
             {
               this.state.editing ?
                 <input
+                  onPaste={::this.handlePaste}
                   className="table-cell__input"
                   type="text"
                   ref="input"
@@ -122,6 +200,8 @@ export default class TableCell extends Component {
                   onBlur={ ::this.onBlur }
                 /> :
                 <span>{ numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)') }</span>
+              
+                
             }
           </div>
         );

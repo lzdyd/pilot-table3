@@ -39,6 +39,7 @@ export default class Excel extends Component {
   }
 
   render() {
+    const { pasteData } = this.props;
     /**
      * If data is being fetched, render "Loading spinner"
      */
@@ -166,10 +167,17 @@ export default class Excel extends Component {
             modelView.table.rowParams.map((item, i) => {
               if (+item.rowNumber !== 1) {
                 return (
-                  <TableRows row={ item } data={ modelView } dataAttrs={ this.props.data }
-                             editable={ this.props.jsonData.edit } valuesHash={ valuesHash } key={ i }
-                             onCellChange={ this.props.onCellChange }
-                             dataKey={ i } activeCell={ this.state.activeCell } />
+                  <TableRows
+                    row={ item }
+                    data={ modelView }
+                    dataAttrs={ this.props.data }
+                    editable={ this.props.jsonData.edit }
+                    valuesHash={ valuesHash } key={ i }
+                    onCellChange={ this.props.onCellChange }
+                    dataKey={ i }
+                    activeCell={ this.state.activeCell }
+                    pasteData={pasteData}
+                  />
                 );
               }
 

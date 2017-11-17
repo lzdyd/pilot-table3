@@ -123,7 +123,7 @@ function evalJSON(item) {
   let result;
 
   try {
-    result = eval('(' + restructuredFunc + ')') || 'Ошибка вычислений';
+    result = eval(`(${restructuredFunc})`) || 'Ошибка вычислений';
   } catch (e) {
     result = 'Ошибка вычислений';
   }
@@ -166,19 +166,18 @@ function calculateData() {
   // let valuesHash = Object.assign({}, this.valuesHash);
   let valuesHash = JSON.parse(JSON.stringify(this.valuesHash));
 
-  for (let key in valuesHash) {
+  for (const key in valuesHash) {
     if (Object.prototype.hasOwnProperty.call(valuesHash, key)) {
       if (valuesHash[key].dependencies) valuesHash[key].state = 'waiting';
     }
   }
 
-  for (let key in valuesHash) {
+  for (const key in valuesHash) {
     if (Object.prototype.hasOwnProperty.call(valuesHash, key)) {
       const item = Object.assign({}, valuesHash[key]);
 
       if (item.dependencies && item.state !== 'calculated') {
         item.dependencies.forEach((dependency) => {
-
           if (valuesHash[dependency].dependencies) {
             valuesHash = JSON.parse(JSON.stringify(calculateDependency.call(valuesHash, dependency)));
           }
@@ -231,13 +230,14 @@ const checkDependencies = function checkDependencies(node, updatedNode) {
 };
 
 function updateStore(payload) {
+  // debugger;
   // TODO: create array of dependencies, go through each elem and set elem's state to 'waiting'
   const store = JSON.parse(JSON.stringify(this));
   let valuesHash = JSON.parse(JSON.stringify(this.valuesHash));
 
   valuesHash[payload.id].value = payload.data;
 
-  for (let key in valuesHash) {
+  for (const key in valuesHash) {
     if (Object.prototype.hasOwnProperty.call(valuesHash, key)) {
       if (valuesHash[key].dependencies && valuesHash[key].state !== 'waiting') {
         valuesHash = checkDependencies.call(valuesHash, key, payload.id);
@@ -256,7 +256,9 @@ function updateStore(payload) {
  * @returns { Object } regular JS object
  */
 function parseDoctypeXML(xml) {
+  // debugger;
   const attributes = Array.from(xml.querySelectorAll('attribute')).map((item) => {
+    // debugger;
     const currentAttribute = {
       id: item.querySelector('id').firstChild.nodeValue,
       label: item.querySelector('label').firstChild.nodeValue,
@@ -411,6 +413,17 @@ function checkData(payload) {
   return createInitialData(payload);
 }
 
+
+function pasteValuesFromExcel(state, entryData) {
+  const data = { ...state.valuesHash };
+
+  entryData.forEach((item) => {
+    data[item.id].value = +item.value;
+  });
+
+  return data;
+}
+
 export default function employeesTable(state = initialState, action) {
   switch (action.type) {
     case GET_DATA_REQUEST:
@@ -458,6 +471,12 @@ export default function employeesTable(state = initialState, action) {
 
     case SAVE_DATA_FAILURE:
       return { ...state, savingDataFetching: { fetching: false, response: action.payload } };
+
+    case 'PASTE_DATA':
+      return {
+        ...state,
+        valuesHash: pasteValuesFromExcel.call(this, state, action.payload)
+      };
 
     default:
       return state;

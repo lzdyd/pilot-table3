@@ -122,8 +122,8 @@ function createDocList(data) {
         year: item.year,
         client: item.client,
         type: item.type,
-        creation_date: item.creation_date,
-        modify_date: item.modify_date
+        creation_date: item.creationDate,
+        modify_date: item.modifyDate
       };
 
       const key = `${doclist.type}_${doclist.period}_${doclist.year}`;

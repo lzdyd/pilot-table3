@@ -21,6 +21,16 @@ import {
   SAVE_DATA_FAILURE
 } from '../constants/index';
 
+export function pasteDataInExcel(obj) {
+  return ((dispatch) => {
+    dispatch({
+      type: 'PASTE_DATA',
+      payload: obj
+    });
+  });
+}
+
+
 export function getDocList({ client, year, period }) {
   const url = `http://192.168.235.188:9081/prototype/docList?clientName=${client}&Q=${period}&year=${year}`;
 
