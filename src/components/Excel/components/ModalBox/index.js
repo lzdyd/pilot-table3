@@ -14,7 +14,7 @@ export default class ModalBox extends Component {
   }
 
   render() {
-    if (this.props.state) {
+    if (this.props.show) {
       return <div id="modalbox">{ this.props.response.message }</div>;
     }
 

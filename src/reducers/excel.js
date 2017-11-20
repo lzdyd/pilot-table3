@@ -13,11 +13,15 @@ import {
 } from '../constants/index';
 
 /**
+ * Created by lzdyd
+ */
+
+/**
  * @description Creates initial state for excel table
  * @property { object }  data              - Contains excel data
  * @property { boolean } fetching          - If true, inform that data is being fetched
- * @property { Object } savingDataFetching - If data is being saved, fetching key is stated to true. Response key
- *                                           contains server's response
+ * @property { Object } savingDataFetching - If data is being saved, fetching key is stated to true.
+ *                                           Response key contains server's response
  * @property { Object } valuesHash         - Hash table of received attributes
  */
 
@@ -115,6 +119,11 @@ function createValuesHash(data) {
   return hash;
 }
 
+/**
+ * @description Evaluates JS code
+ * @param { Object } item - cell
+ * @returns {*}
+ */
 function evalJSON(item) {
   const restructuredFunc = item.formula.replace(/F\d+/g, (str) => {
     return `+this.F${str.match(/\d+/)}.value`;
@@ -131,6 +140,10 @@ function evalJSON(item) {
   return result;
 }
 
+/**
+ * @description Watch calculatedData function
+ * @param dependency
+ */
 const calculateDependency = function calculateDependency(dependency) {
   let hash = JSON.parse(JSON.stringify(this));
 
@@ -162,8 +175,18 @@ const calculateDependency = function calculateDependency(dependency) {
   return hash[dependency];
 };
 
+/**
+ * @description Some kind of Depth-first search.
+ * First, it goes through each node and set 'state = waiting' if node contains dependencies.
+ * Then it goes through each node again and check its dependencies and state.
+ * If these conditions are fulfilled, this algorithm checks if node's dependency contains
+ * its own dependencies. If it does, it calculates them.
+ * Once all the dependencies are calculated, it calculates our node.
+ * After all, it sets node's state to 'calculated'.
+ * @return { Object } valuesHash - Hash table of cells
+ */
+// TODO: refactor this method
 function calculateData() {
-  // let valuesHash = Object.assign({}, this.valuesHash);
   let valuesHash = JSON.parse(JSON.stringify(this.valuesHash));
 
   for (const key in valuesHash) {
@@ -190,14 +213,14 @@ function calculateData() {
     }
   }
 
-  // TODO: it mutates store. Rewrite it
-  // this.data.attributes.map((item) => {
-  //   return item.value = valuesHash[`F${item.id}`].value;
-  // });
-
   return valuesHash;
 }
 
+/**
+ * @description Checks node's dependencies
+ * @param node
+ * @param updatedNode
+ */
 const checkDependencies = function checkDependencies(node, updatedNode) {
   let hash = JSON.parse(JSON.stringify(this));
   const dependencyDependencies = hash[node].dependencies || null;
@@ -385,6 +408,11 @@ function parseXML(payload) {
   return parsedXML;
 }
 
+/**
+ * @description If we need to create a new document, this function creates initial data for it
+ * @param { String } url
+ * @return {{status: number, version: number, client, type, period, year, edit}}
+ */
 function createInitialData(url) {
   const data = {
     status: 0,
@@ -399,6 +427,11 @@ function createInitialData(url) {
   return data;
 }
 
+/**
+ * @description Checks if we need to edit an existing document or to create a new one
+ * @param payload
+ * @return {{status: number, version: number, client, type, period, year, edit}}
+ */
 function checkData(payload) {
   if (payload.response) {
     const updatedPayload = JSON.parse(JSON.stringify(payload.response));

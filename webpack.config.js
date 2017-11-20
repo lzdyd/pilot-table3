@@ -1,14 +1,18 @@
 const path = require('path');
 const webpack = require('webpack');
-require("babel-polyfill");
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const CONTEXT = process.env.NODE_ENV === 'development' ? '/' : '/fok-ui/';
+
+require('babel-polyfill');
+
+console.log('Dev build');
 
 module.exports = {
   context: path.join(__dirname, '\\src'),
 
   entry: [
-    "babel-polyfill",
+    'babel-polyfill',
     'webpack-hot-middleware/client',
     './index'
   ],
@@ -39,7 +43,8 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
-      NODE_ENV: JSON.stringify(NODE_ENV)
+      NODE_ENV: JSON.stringify(NODE_ENV),
+      CONTEXT: JSON.stringify(CONTEXT)
     }),
     new webpack.optimize.ModuleConcatenationPlugin()
   ],
@@ -68,13 +73,3 @@ module.exports = {
     }]
   }
 };
-
-if (NODE_ENV === 'production') {
-  module.exports.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false,
-      drop_console: true,
-      unsafe: true
-    }
-  }));
-}

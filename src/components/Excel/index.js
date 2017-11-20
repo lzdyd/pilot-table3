@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import ls from 'local-storage';
 
 import TableHeaders from './components/TableHeaders';
 import TableRows from './components/TableRows';
 import ModalBox from './components/ModalBox';
 
 import './style.scss';
+
+/**
+ * Created by lzdyd
+ */
 
 export default class Excel extends Component {
   constructor(props) {
@@ -17,25 +19,25 @@ export default class Excel extends Component {
       activeCell: 1
     };
 
+    this.onSaveData = this.onSaveData.bind(this);
     this.mountModalBox = this.mountModalBox.bind(this);
     this.unmountModalBox = this.unmountModalBox.bind(this);
   }
 
   onSaveData() {
-    ls.set('save', 'true');
     this.props.onSaveData();
   }
 
   mountModalBox() {
     this.setState({
       renderModalBox: true
-    })
+    });
   }
 
   unmountModalBox() {
     this.setState({
       renderModalBox: false
-    })
+    });
   }
 
   render() {
@@ -76,7 +78,7 @@ export default class Excel extends Component {
     const modelView = this.props.modelView;
     const valuesHash = this.props.valuesHash;
 
-    // TODO: remove this code to reducer
+    // TODO: remove this code to reducer and save this data in store
     let periodType;
 
     switch (data.periodType) {
@@ -105,7 +107,7 @@ export default class Excel extends Component {
         {
           this.props.savingDataFetching.response ?
             <ModalBox
-              state={ this.state.renderModalBox }
+              show={ this.state.renderModalBox }
               response={ this.props.savingDataFetching.response }
               mountModalBox={ this.mountModalBox }
               unmountModalBox={ this.unmountModalBox }
@@ -122,7 +124,7 @@ export default class Excel extends Component {
           this.props.jsonData.edit ?
             <ul className="controls-list">
               <li>
-                <button onClick={ ::this.onSaveData }>
+                <button onClick={ this.onSaveData }>
                   {
                     this.props.savingDataFetching.fetching ?
                       <span>Сохраняю...</span> :
@@ -155,14 +157,6 @@ export default class Excel extends Component {
 
         <div className="excel-table">
           <TableHeaders data={ modelView }/>
-          {/*          {
-            data.attributes.map((item) => {
-              return (
-                <TableRows data={ item } value={ valuesHash[item.id].value } key={ item.id }
-                           onCellChange={ this.props.onCellChange}/>
-              );
-            })
-          }*/}
           {
             modelView.table.rowParams.map((item, i) => {
               if (+item.rowNumber !== 1) {
@@ -172,11 +166,11 @@ export default class Excel extends Component {
                     data={ modelView }
                     dataAttrs={ this.props.data }
                     editable={ this.props.jsonData.edit }
-                    valuesHash={ valuesHash } key={ i }
+                    valuesHash={ valuesHash }
+                    key={ i }
                     onCellChange={ this.props.onCellChange }
                     dataKey={ i }
                     activeCell={ this.state.activeCell }
-                    pasteData={pasteData}
                   />
                 );
               }
@@ -187,23 +181,5 @@ export default class Excel extends Component {
         </div>
       </div>
     );
-    /*
-        return (
-          <div className="excel">
-            <h1>{ data.title }</h1>
-            <p>{ data.description }</p>
-            <div className="excel-table">
-              <TableHeaders data={ data.tableHeaders }/>
-              {
-                data.attributes.map((item) => {
-                  return (
-                    <TableRows data={ item } value={ valuesHash[`id${item.id}`].value } key={ item.id }
-                               onCellChange={ this.props.onCellChange } />
-                  );
-                })
-              }
-            </div>
-          </div>
-        );*/
   }
 }

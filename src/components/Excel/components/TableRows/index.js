@@ -28,17 +28,6 @@ export default class TableRows extends Component {
       );
     });
 
-    // return (
-    //   <div className="table-row">
-    //     <div className={ `table-cell table-cell-label ${this.props.data.formula ? 'table-cell-label-bold' : ''}` }>
-    //       { this.props.data.label }
-    //     </div>
-    //     <div className={ `table-cell table-cell-label ${this.props.data.formula ? 'table-cell-label-bold' : ''}` }>
-    //       { this.props.data.id }
-    //     </div>
-    //     <TableCell data={ this.props.data } value={ this.props.value } onCellChange={ this.props.onCellChange } />
-    //   </div>
-    // );
     return (
       <div className="table-row">
         { currentRowHTML }

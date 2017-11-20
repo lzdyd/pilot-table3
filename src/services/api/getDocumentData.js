@@ -1,3 +1,7 @@
+/**
+ * Created by lzdyd
+ */
+
 const getDataAPI = (url) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
