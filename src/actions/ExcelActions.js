@@ -68,7 +68,9 @@ export function fetchDocHistory({ client, type, period, year }) {
       type: 'GET_DOCHISTORY_REQUEST'
     });
 
-    axios.get(url)
+    axios.get(url, {
+      withCredentials: true
+    })
       .then(({ data }) => {
         dispatch({
           type: 'GET_DOCHISTORY_SUCCESS',
