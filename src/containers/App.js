@@ -27,8 +27,12 @@ class App extends Component {
 
   fetchingClientsAndForms() {
     axios.all([
-      axios.get('http://192.168.235.188:9081/prototype/getDocTypeList'),
-      axios.get('http://192.168.235.188:9081/prototype/getClientList')
+      axios.get('http://192.168.235.188:9081/prototype/getDocTypeList', {
+        withCredentials: true
+      }),
+      axios.get('http://192.168.235.188:9081/prototype/getClientList', {
+        withCredentials: true
+      })
     ])
       .then(axios.spread((forms, clients) => {
         this.setState({

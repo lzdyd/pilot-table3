@@ -3,7 +3,7 @@ const getDataAPI = (url) => {
     const xhr = new XMLHttpRequest();
 
     xhr.open('GET', url);
-
+    xhr.withCredentials = true;
     xhr.onload = () => {
       if (xhr.status === 200) {
         resolve(xhr.responseText);

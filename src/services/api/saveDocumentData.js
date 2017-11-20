@@ -15,6 +15,7 @@ const saveDocumentDataAPIold = (data, doctype) => {
   const xhr = new XMLHttpRequest();
 
   xhr.open('POST', 'http://192.168.235.188:9081/prototype/saveDocument');
+  xhr.withCredentials = true;
 
   // xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/json');

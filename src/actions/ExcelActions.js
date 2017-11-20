@@ -40,7 +40,9 @@ export function getDocList({ client, year, period }) {
       payload: 'Loading...'
     });
 
-    axios.get(url)
+    axios.get(url, {
+      withCredentials: true
+    })
       .then((response) => {
         dispatch({
           type: GET_DOCLIST_SUCCESS,
@@ -128,7 +130,9 @@ function getDoctype(formNum) {
 function getXMLDocViewAPI(formNum) {
   return dispatch =>
     fetch(
-      `http://192.168.235.188:9081/prototype/getDocView?docType=FORM${formNum}`
+      `http://192.168.235.188:9081/prototype/getDocView?docType=FORM${formNum}`, {
+        credentials: 'include'
+      }
     ).then(
       response => response.text()
     ).then(
@@ -151,7 +155,9 @@ function getXMLDocViewAPI(formNum) {
 function getXMLDocModelAPI(formNum) {
   return dispatch =>
     fetch(
-      `http://192.168.235.188:9081/prototype/getDocModel?docType=FORM${formNum}`
+      `http://192.168.235.188:9081/prototype/getDocModel?docType=FORM${formNum}`, {
+        credentials: 'include'
+      }
     ).then(
       response => response.text()
     ).then(
@@ -261,6 +267,7 @@ export function updateStore(id, data) {
 
 export function saveData(data, doctype) {
   // saveDocumentDataAPI(data, doctype);
+  // debugger;
   return ((dispatch) => {
     dispatch({
       type: SAVE_DATA_REQUEST
