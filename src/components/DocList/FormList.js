@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import axios from 'axios';
-import ls from 'local-storage';
 
 
 import { AllPeriods } from './TableHeader';
 import DocHistory from './DocHistory';
 import ContextMenu from './ContextMenu';
-
+import warning from '../../../img/warning.png';
+import error from '../../../img/block.png';
 
 
 
@@ -44,12 +44,26 @@ function getClassDepenstatus(status) {
 }
 
 
+function errorRate(data) {
+  let res = 0;
+
+  data.forEach((item) => {
+    if (item.type > res) {
+      res = item.type;
+    }
+  });
+
+  return res;
+}
+
+
 function renderFormList(data, docList_v2) {
   // debugger;
   function docRender(key, isExist, docList_v2) {
     if (docList_v2.hasOwnProperty(key)) {
       isExist = true;
       const doc = docList_v2[key];
+      const rate = errorRate(doc.messages);
       return (
         <div
           className="doc"
@@ -58,6 +72,12 @@ function renderFormList(data, docList_v2) {
           </div>
           <div className="doc-date">{doc.modify_date}</div>
           <div className="doc-version">вер.:{doc.version}</div>
+          {
+            (() => {
+              if (rate === 2) return <img className="indicate" src={error} alt=""/>;
+              if (rate === 1) return <img className="indicate" src={warning} alt=""/>;
+            })()
+          }
         </div>
       );
     }
@@ -66,8 +86,6 @@ function renderFormList(data, docList_v2) {
 
   function setDocFromList(period, formId) {
     const arr = [];
-
-    // console.log(formId);
 
     for (let i = 0; i < period.length; i++) {
       const key = `${formId}_${period[i].period}_${period[i].year}`;
@@ -114,6 +132,7 @@ function createDocList(data) {
 
   if (data) {
     data.forEach((item) => {
+      // debugger;
       doclist = {
         id: item.id,
         status: item.status,
@@ -123,7 +142,8 @@ function createDocList(data) {
         client: item.client,
         type: item.type,
         creation_date: item.creationDate,
-        modify_date: item.modifyDate
+        modify_date: item.modifyDate,
+        messages: [...item.messages]
       };
 
       const key = `${doclist.type}_${doclist.period}_${doclist.year}`;
@@ -170,18 +190,21 @@ export default class FormList extends Component {
   }
 
   componentDidMount() {
-    ls.on('save', (value) => {
-      this.props.getdocList(this.props.dataPeriodAndYear);
-      // console.log('some other tab changed "save" to ' + value);
-      ls.remove('save');
+    let _this = this;
 
+    document.addEventListener('keydown', this.onKeydownhandler);
+    document.addEventListener('click', this.closeContextPpopup);
+
+    window.addEventListener('storage', () => {
+      localStorage.removeItem('save');
+      _this.props.getdocList(_this.props.dataPeriodAndYear);
     });
-    document.addEventListener('keydown', this.onKeydownhandler)
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeydownhandler)
   }
+
 
   popupClose() {
     this.setState({
@@ -214,16 +237,18 @@ export default class FormList extends Component {
   }
 
   setTitleForDocs(status, curDoc) {
+    let doc = curDoc.split('_');
+
     if (status === 0) {
       return (
-        <p className="popup-text">Открыть документ {::this.renderLabelDependFromForm(curDoc)} по
-          клиенту {this.getclientDescr(this.props.clientIsChecked)}?
+        <p className="popup-text">Открыть документ {::this.renderLabelDependFromForm(curDoc)} за {doc[1]} кв {doc[2]} года
+          по клиенту {this.getclientDescr(this.props.clientIsChecked)}?
         </p>
       );
     } else if (status === 7 || status === 3) {
         return (
-          <p className="popup-text">Документ {::this.renderLabelDependFromForm(curDoc)} по
-            клиенту {this.getclientDescr(this.props.clientIsChecked)} утверждён
+          <p className="popup-text">Документ {::this.renderLabelDependFromForm(curDoc)} за {doc[1]} кв {doc[2]} года
+            по клиенту {this.getclientDescr(this.props.clientIsChecked)} утверждён
             или находится в архиве. Создать новую версию?
           </p>
         );
@@ -231,9 +256,11 @@ export default class FormList extends Component {
   }
 
   setTitleForDocsDefault(curDoc) {
+    let doc = curDoc.split('_');
+
     return (
-      <p className="popup-text">Документ {this.renderLabelDependFromForm(curDoc)} отсутствует
-        в выбранном периоде, создать новый документ
+      <p className="popup-text">Документ {this.renderLabelDependFromForm(curDoc)} за {doc[1]} кв {doc[2]} года
+        отсутствует в выбранном периоде. Создать новый документ?
       </p>
     );
   }
@@ -267,9 +294,14 @@ export default class FormList extends Component {
     return this.getPosition(e);
   }
 
+  // closeContextPpopup = (e) => {
+  //   console.log(e.target);
+  // };
+
 
   onKeydownhandler(e) {
     const { constextPopupIsShow } = this.state;
+
     if (e.keyCode === 27) {
       if (this.state.constextPopupIsShow) {
         this.setState({
@@ -333,7 +365,7 @@ export default class FormList extends Component {
 
   constextPopupIsShow() {
     this.setState({ constextPopupIsShow: false });
-    console.log(this.state.constextPopupIsShow)
+    // console.log(this.state.constextPopupIsShow)
   }
 
   foo(curDoc, e) {
@@ -358,10 +390,12 @@ export default class FormList extends Component {
 
     let promise = new Promise((resolve, rejected) => {
       if (doc) {
-        axios.get(url)
-          .then((response) => response.data)
+        axios.get(url, {
+          withCredentials: true
+        })
+          .then((response) => response)
           .then(response => {
-            if (response.status === 'OK') resolve()
+            if (response.status === 200) resolve()
           })
           .catch((err) => console.log(err));
       }
@@ -369,7 +403,6 @@ export default class FormList extends Component {
 
     promise
       .then((response) => getdocList(dataPeriodAndYear))
-      .then((response) => console.log(this.props.doclist))
       .catch((err) => console.log(err))
   }
 
@@ -378,10 +411,12 @@ export default class FormList extends Component {
     const url = `http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=7`;
 
     let promise = new Promise((resolve, rejected) => {
-      axios.get(url)
-        .then(response => response.data)
+      axios.get(url, {
+        withCredentials: true
+      })
+        .then(response => response)
         .then(response => {
-          if (response.status === 'OK') resolve()
+          if (response.status === 200) resolve()
         })
         .catch(err => console.log(err));
     });
@@ -389,7 +424,6 @@ export default class FormList extends Component {
     promise
       .then(response => {
         let res = this.props.getdocList(this.props.dataPeriodAndYear);
-        console.log(res);
       })
       .catch(err => console.log(err))
   }
@@ -399,10 +433,12 @@ export default class FormList extends Component {
     const url = `http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=0`;
 
     let promise = new Promise((resolve, rejected) => {
-      axios.get(url)
-        .then(response => response.data)
+      axios.get(url, {
+        withCredentials: true
+      })
+        .then(response => response)
         .then(response => {
-          if (response.status === 'OK') resolve()
+          if (response.status === 200) resolve()
         })
         .catch(err => console.log(err));
     });
@@ -410,7 +446,6 @@ export default class FormList extends Component {
     promise
       .then(response => {
         let res = this.props.getdocList(this.props.dataPeriodAndYear);
-        console.log(res);
       })
       .catch(err => console.log(err))
   }
@@ -438,11 +473,8 @@ export default class FormList extends Component {
       dataPeriodAndYear,
       doclist,
       clientIsChecked,
-      fetchDocHistory,
       dochistory
     } = this.props;
-
-    console.log(dataPeriodAndYear);
 
     const positionX = menuPositionX;
     const positionY = menuPositionY;
@@ -454,9 +486,6 @@ export default class FormList extends Component {
 
     const forms = generateFormList(formsList);
     const docList_v2 = createDocList(doclist);
-
-    console.log(forms);
-
 
     const popupClass = `popup ${popupIsShow ? 'popup-show' : ''}`;
     const popupClassNameBtnCreate = `btn ${popupIsShow && curDocObj && 'none'}`;

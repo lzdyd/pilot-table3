@@ -38,16 +38,16 @@ export default class ContextMenu extends PureComponent {
           onClick={toArchive.bind(this, curDoc)}
         >Перевести в архив
         </a>
-        {/*<a*/}
-          {/*className="btn"*/}
-          {/*onClick={toOk.bind(this, curDoc)}*/}
-        {/*>Перевести в УТВЕРЖДЕН*/}
-        {/*</a>*/}
-        {/*<a*/}
-          {/*className="btn"*/}
-          {/*onClick={toEdit.bind(this, curDoc)}*/}
-        {/*>Перевести в Редактировать*/}
-        {/*</a>*/}
+        <a
+          className="btn"
+          onClick={toOk.bind(this, curDoc)}
+        >Перевести в УТВЕРЖДЕН
+        </a>
+        <a
+          className="btn"
+          onClick={toEdit.bind(this, curDoc)}
+        >Перевести в Редактировать
+        </a>
         <a
           className="btn"
           onClick={::this.fetchingDocHistory}

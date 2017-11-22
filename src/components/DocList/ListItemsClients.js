@@ -26,6 +26,16 @@ export default class ListItemsClients extends PureComponent {
 
   handleClientChecked() {
     this.props.handlerclientIsChecked(this.state.isChecked);
+
+    const dataObjForRequst = {
+      client: this.state.isChecked,
+      year: this.props.yearIsChecked,
+      period: this.props.periodIsChecked
+    };
+
+    this.props.getdocList(dataObjForRequst);
+    this.props.setDataForFetchDocs(dataObjForRequst);
+
     this.props.handlerOnClickHide();
   }
 
@@ -61,7 +71,6 @@ export default class ListItemsClients extends PureComponent {
 
     const clientItems = listClientFiltered && listClientFiltered.map((item, i) => {
       const clientListItemClassName = `clients-list__item ${isChecked === item.divid ? 'is-checked-client' : ''}`;
-
       return (
         <li
           className={clientListItemClassName}
@@ -74,6 +83,7 @@ export default class ListItemsClients extends PureComponent {
         </li>
       );
     });
+
 
     return (
       <div className={clientClassName}>

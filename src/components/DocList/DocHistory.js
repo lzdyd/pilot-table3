@@ -13,9 +13,6 @@ export default class DocHistory extends PureComponent {
     this.toCheckedVersion = this.toCheckedVersion.bind(this);
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   // console.log(nextProps);
-  // }
 
   renderHeaderDocHistory(data) {
     return data.map((item, i) => <div key={i} className="doc-history-header-item">{item}</div>);
@@ -27,7 +24,7 @@ export default class DocHistory extends PureComponent {
     rowsItems.push(
       <div className="doc-history-rows-items">{data.version}</div>,
       <div className="doc-history-rows-items">{data.status}</div>,
-      <div className="doc-history-rows-items">{data.modify_date}</div>,
+      <div className="doc-history-rows-items">{data.modifyDate}</div>,
       <div className="doc-history-rows-items">{data.modify_user}</div>
     );
 

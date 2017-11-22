@@ -171,6 +171,7 @@ export default class Excel extends Component {
                     onCellChange={ this.props.onCellChange }
                     dataKey={ i }
                     activeCell={ this.state.activeCell }
+                    pasteData={pasteData}
                   />
                 );
               }

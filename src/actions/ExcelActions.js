@@ -1,6 +1,5 @@
 import axios from 'axios';
 import fetch from 'isomorphic-fetch';
-import ls from 'local-storage';
 
 import getDocumentDataAPI from 'api/getDocumentData';
 import saveDocumentDataAPI from 'api/saveDocumentData';
@@ -236,13 +235,14 @@ export function saveData(data, doctype) {
     // (like in getDocumentData function)
     saveDocumentDataAPI(data, doctype)
       .then((response) => {
+        // debugger;
         dispatch({
           type: SAVE_DATA_SUCCESS,
-          payload: JSON.parse(response)
+          // payload: JSON.parse(response)
         });
       })
       .then(() => {
-        ls.set('save', 'true');
+        localStorage.setItem('save', 'true');
       })
       .catch((err) => {
         dispatch({

@@ -39,15 +39,40 @@ export class DocList extends Component {
     };
 
     this.onKeydownhandler = this.onKeydownhandler.bind(this);
+    // this.closeAllPopup = this.closeAllPopup.bind(this);
   }
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeydownhandler);
+    // document.addEventListener('click', this.closeAllPopup);
+    console.log(document.title);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeydownhandler)
+    document.removeEventListener('keydown', this.onKeydownhandler);
+    // document.removeEventListener('click', this.closeAllPopup);
   }
+
+  // closeAllPopup({ target }) {
+  //   const { showGenerateReport, clientShow } = this.state;
+  //   const targetClass = target.classList;
+  //   const targetParent = target.parentNode;
+  //
+  //   const targetClick = targetClass.contains('clients-items-btn') ||
+  //     targetParent.parentNode.classList.contains('show') ||
+  //     targetClass.contains('show') ||
+  //     targetClass.contains('analytic-report') ||
+  //     targetParent.parentNode.classList.contains('report-popup') ||
+  //     targetParent.classList.contains('report-popup') ||
+  //     targetClass.contains('report-popup');
+  //
+  //   if (targetClick) return;
+  //
+  //   this.setState({
+  //     clientShow: false,
+  //     showGenerateReport: false
+  //   });
+  // };
 
 
   changePeriodsOnNext() {
@@ -106,11 +131,17 @@ export class DocList extends Component {
     });
   }
 
-  HideGenerateAnalyticReport() {
+  HideGenerateAnalyticReport(e) {
     this.setState({
       showGenerateReport: false
     });
   }
+
+  setDataForFetchDocs (obj) {
+    this.setState({
+      dataPeriodAndYear: obj
+    });
+  };
 
 
   receiveOnClick() {
@@ -213,6 +244,7 @@ export class DocList extends Component {
         <button
           onClick={::this.showGenerateAnalyticReport}
           disabled={!clientIsChecked && 'true'}
+          className="analytic-report"
         >
           Сформировать аналитический отчет
         </button>
@@ -238,25 +270,33 @@ export class DocList extends Component {
           yearIsChecked={yearIsChecked}
         />
         <ListItemsClients
+          setDataForFetchDocs={::this.setDataForFetchDocs}
+          receiveOnClick={::this.receiveOnClick}
           handlerclientRemove={::this.handlerclientRemove}
           handlerOnClickHide={::this.handlerOnClickHide}
           handlerclientIsChecked={::this.handlerclientIsChecked}
           filterListClients={filterListClients}
           clientIsChecked={clientIsChecked}
+          periodIsChecked={periodIsChecked}
+          yearIsChecked={yearIsChecked}
           listClient={listClient}
           listClientFiltered={listClientFiltered}
           clientShow={clientShow}
-        />
-        <DocTable
-          dataPeriodAndYear={dataPeriodAndYear}
-          formsList={formsList}
-          doclist={doclist}
-          clientIsChecked={clientIsChecked}
-          listClient={listClient}
           getdocList={getdocList}
-          fetchDocHistory={fetchDocHistory}
-          dochistory={dochistory}
+
         />
+        {doclist &&
+          <DocTable
+            dataPeriodAndYear={dataPeriodAndYear}
+            formsList={formsList}
+            doclist={doclist}
+            clientIsChecked={clientIsChecked}
+            listClient={listClient}
+            getdocList={getdocList}
+            fetchDocHistory={fetchDocHistory}
+            dochistory={dochistory}
+          />
+        }
       </div>
     );
   }

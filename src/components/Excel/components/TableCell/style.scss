@@ -12,17 +12,24 @@
     left: 0;
     width: 100%;
     box-sizing: border-box;
-    height: 100%;
     padding: 10px;
     font-size: 15px;
+    z-index: 100;
+    text-align: right;
   }
 
 }
 
 .table-cell-data {
+  text-align: right;
+
   &:not(:last-child) {
     border-right: 1px solid #ddd;
   }
+}
+
+.table-cell-rowNumber {
+  text-align: center;
 }
 
 .table-cell-data-bold,

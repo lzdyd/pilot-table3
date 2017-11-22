@@ -34,7 +34,6 @@ export default class ReportPeriod extends PureComponent {
     });
   }
 
-
   getDocs() {
     const dataObjForRequst = {
       client: this.props.clientIsChecked,
@@ -42,8 +41,8 @@ export default class ReportPeriod extends PureComponent {
       period: this.props.periodIsChecked
     };
 
-     this.props.getdocList(dataObjForRequst);
-      this.props.receiveOnClick();
+    this.props.getdocList(dataObjForRequst);
+    this.props.receiveOnClick();
   }
 
   changePeriodsPrev() {

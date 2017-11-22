@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import numeral from 'numeral';
 
@@ -10,13 +11,15 @@ export default class TableCell extends Component {
 
     this.state = {
       editable: false,
-      editing: false
+      editing: false,
+      onPaste: false
     };
 
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.getLabel = this.getLabel.bind(this);
     this.getRowNumber = this.getRowNumber.bind(this);
+    // this.keyPressHandler = _.throttle(this.keyPressHandler.bind(this), 0);
   }
 
   /**
@@ -52,7 +55,9 @@ export default class TableCell extends Component {
 
     if (+this.refs.input.value !== this.props.value) {
       const id = this.props.data.docField;
-      this.props.onCellChange(id, +this.refs.input.value);
+      if (!this.state.onPaste && this.refs.input.value) {
+        this.props.onCellChange(id, +this.refs.input.value);
+      }
     }
   }
 
@@ -75,7 +80,6 @@ export default class TableCell extends Component {
   handlePaste (e) {
     let clipboardData;
     let pastedData;
-    let len;
     let target = e.target.parentNode.parentNode;
     let arrValueTarget = [];
 
@@ -85,38 +89,22 @@ export default class TableCell extends Component {
     // Get pasted data via clipboard API
     clipboardData = e.clipboardData || window.clipboardData;
     pastedData = clipboardData.getData('Text').split(/\n/).map((item) => {
-      let num = item.trim().replace(/\,/g, '.').split('');
-      num.splice(num.indexOf('.'), 4);
 
-      let pp1 = new RegExp("\\(", "g");
-      let pp2 = new RegExp("\\)", "g");
+      let num;
 
-      if (num.indexOf(' ') !== -1) {
-        if (num.indexOf('(') !== -1) {
-          num.splice(num.indexOf('('), 1);
-          num.splice(num.indexOf(')'), 1);
-
-          return -num.join('').replace(' ', '');
-        }
-        return num.join('').replace(' ', '');
+      if (item.indexOf('(') !== -1) {
+        num = -item.replace(/[^0-9]/g, '');
+      } else {
+        num = item.replace(/[^0-9]/g, '');
       }
 
-      if (num.indexOf('(') !== -1) {
-        num.splice(num.indexOf('('), 1);
-        num.splice(num.indexOf(')'), 1);
-
-        return -num.join('');
-      }
-
-        return num.join('');
+      return num;
     });
 
-    pastedData.pop();
-    len = pastedData.length - 1;
+    let len = pastedData.length - 1;
+    let i = 0;
 
     arrValueTarget.push('F' + target.childNodes[1].innerHTML);
-
-    let i = 0;
 
     while (true) {
       if (!target.nextSibling.childNodes[2].dataset.key) {
@@ -129,9 +117,7 @@ export default class TableCell extends Component {
 
       i++;
 
-      if (i === len) {
-        break;
-      }
+      if (i === len) break;
     }
 
     let mapValue = [];
@@ -143,8 +129,23 @@ export default class TableCell extends Component {
       });
     }
 
+    this.setState({
+      onPaste: true
+    });
+
     return this.props.pasteData(mapValue);
   }
+
+  // keyPress = (e) => {
+  //   this.keyPressHandler(e);
+  // };
+  //
+  // keyPressHandler({ charCode }) {
+  //   if (charCode < 48 || charCode > 57 ) {
+  //     console.log(charCode);
+  //     return false;
+  //   }
+  // };
 
   render() {
     const cellType = this.props.data.style;
@@ -195,6 +196,7 @@ export default class TableCell extends Component {
             {
               this.state.editing ?
                 <input
+                  onKeyPress={this.keyPress}
                   onPaste={::this.handlePaste}
                   className="table-cell__input"
                   type="text"
@@ -202,9 +204,23 @@ export default class TableCell extends Component {
                   defaultValue={ this.props.valuesHash[this.props.data.docField].value }
                   onBlur={ this.onBlur }
                 /> :
-                <span>{ numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)') }</span>
-              
-                
+                  (() => {
+                    if (this.props.valuesHash[this.props.data.docField].value ||
+                        this.props.valuesHash[this.props.data.docField].value === 0) {
+                      return (
+                        <span>
+                          {numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)')}
+                        </span>
+                      );
+                    } else if (this.props.valuesHash[this.props.data.docField].value === null) {
+                      return <span></span>;
+                    }
+
+
+                  })()
+                // <span>
+                //   {numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)')}
+                // </span>
             }
           </div>
         );
