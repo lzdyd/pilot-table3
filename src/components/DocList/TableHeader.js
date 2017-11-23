@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 
+
 import './style.scss';
+
 
 export let AllPeriods;
 
+
 const curPeriod = Math.ceil((new Date().getMonth() + 1) / 3);
+
 
 export class TableHeader extends Component {
 

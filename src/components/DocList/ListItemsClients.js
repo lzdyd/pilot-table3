@@ -9,7 +9,6 @@ export default class ListItemsClients extends PureComponent {
     }
   }
 
-
   getclientCurrent({ target }) {
     this.setState({
       isChecked: target.dataset.descr

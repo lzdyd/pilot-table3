@@ -12,7 +12,8 @@ export default function DocTable({
   listClient,
   getdocList,
   fetchDocHistory,
-  dochistory
+  dochistory,
+  saveDocHistoryId
 }) {
   return (
     <div className="table">
@@ -31,6 +32,7 @@ export default function DocTable({
           getdocList={getdocList}
           fetchDocHistory={fetchDocHistory}
           dochistory={dochistory}
+          saveDocHistoryId={saveDocHistoryId}
         />
       }
     </div>

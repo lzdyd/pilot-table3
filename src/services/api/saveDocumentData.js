@@ -16,9 +16,11 @@ const saveDocumentDataAPI = (data, doctype) => {
   updatedDoctype.data = updatedAttributes;
 
   if (doctype.hasOwnProperty('id')) {
-    delete updatedDoctype.id;
-    updatedDoctype.version += 1;
-    updatedDoctype.status = 0;
+    if(doctype.status !== 0) {
+      delete updatedDoctype.id;
+      updatedDoctype.version += 1;
+      updatedDoctype.status = 0;
+    }
   }
 
   delete updatedDoctype.edit;
@@ -50,7 +52,7 @@ const saveDocumentDataAPI = (data, doctype) => {
     }
 
     reject({"message":"Ошибка сохранения документа:null","status":"ERROR"})
-  }); */
+  });*/
 };
 
 export default function (data, doctype) {

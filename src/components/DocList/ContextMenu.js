@@ -26,7 +26,6 @@ export default class ContextMenu extends PureComponent {
       top: menuPositionY
     };
 
-    // console.log(this.props.div);
 
     return (
       <div

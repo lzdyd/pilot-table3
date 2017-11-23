@@ -386,7 +386,7 @@ button {
   cursor: pointer;
   border: 0;
   border-radius: 3px;
-  background-color: #dddddd;
+  background-color: #a9a9a9a8;
   flex-grow: 0;
   margin-right: 20px;
   text-align: center;
@@ -491,4 +491,8 @@ select {
 
 .indicate {
   margin-right: 30px;
+}
+
+button:disabled {
+  background-color: #a9a9a940;
 }

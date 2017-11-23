@@ -97,9 +97,7 @@ function createValuesHash(data) {
   });
 
   if (data) {
-    // debugger
     Object.values(data.data).forEach((item) => {
-      // debugger;
       hash[item.fieldName] = {
         value: item.dbvalue || null
       };
@@ -253,7 +251,6 @@ const checkDependencies = function checkDependencies(node, updatedNode) {
 };
 
 function updateStore(payload) {
-  // debugger;
   // TODO: create array of dependencies, go through each elem and set elem's state to 'waiting'
   const store = JSON.parse(JSON.stringify(this));
   let valuesHash = JSON.parse(JSON.stringify(this.valuesHash));
@@ -279,9 +276,7 @@ function updateStore(payload) {
  * @returns { Object } regular JS object
  */
 function parseDoctypeXML(xml) {
-  // debugger;
   const attributes = Array.from(xml.querySelectorAll('attribute')).map((item) => {
-    // debugger;
     const currentAttribute = {
       id: item.querySelector('id').firstChild.nodeValue,
       label: item.querySelector('label').firstChild.nodeValue,
@@ -488,22 +483,50 @@ export default function employeesTable(state = initialState, action) {
       return { ...state };
 
     case GET_DATA_FAILURE:
-      return { ...state, error: action.payload, fetching: false };
+      return {
+        ...state,
+        error: action.payload,
+        fetching: false
+      };
 
     case CALCULATE_INITIAL_DATA:
-      return { ...state, valuesHash: calculateData.call(state) };
+      return {
+        ...state,
+        valuesHash: calculateData.call(state)
+      };
 
     case UPDATE_STORE:
-      return { ...state, valuesHash: updateStore.call(state, action.payload) };
+      return {
+        ...state,
+        valuesHash: updateStore.call(state, action.payload)
+      };
 
     case SAVE_DATA_REQUEST:
-      return { ...state, savingDataFetching: { fetching: true, response: null } };
+      return {
+        ...state,
+        savingDataFetching: {
+          fetching: true,
+          response: null
+        }
+      };
 
     case SAVE_DATA_SUCCESS:
-      return { ...state, savingDataFetching: { fetching: false, response: action.payload } };
+      return {
+        ...state,
+        savingDataFetching: {
+          fetching: false,
+          response: action.payload
+        }
+      };
 
     case SAVE_DATA_FAILURE:
-      return { ...state, savingDataFetching: { fetching: false, response: action.payload } };
+      return {
+        ...state,
+        savingDataFetching: {
+          fetching: false,
+          response: action.payload
+        }
+      };
 
     case 'PASTE_DATA':
       return {

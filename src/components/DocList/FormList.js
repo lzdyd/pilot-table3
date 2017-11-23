@@ -58,7 +58,6 @@ function errorRate(data) {
 
 
 function renderFormList(data, docList_v2) {
-  // debugger;
   function docRender(key, isExist, docList_v2) {
     if (docList_v2.hasOwnProperty(key)) {
       isExist = true;
@@ -132,7 +131,6 @@ function createDocList(data) {
 
   if (data) {
     data.forEach((item) => {
-      // debugger;
       doclist = {
         id: item.id,
         status: item.status,
@@ -205,7 +203,6 @@ export default class FormList extends Component {
     document.removeEventListener('keydown', this.onKeydownhandler)
   }
 
-
   popupClose() {
     this.setState({
       popupIsShow: false
@@ -214,7 +211,9 @@ export default class FormList extends Component {
 
   // TODO переписать, потому что потому...
   getCurDoc(id) {
+    // debugger;
     const docList_v2 = createDocList(this.props.doclist);
+    // debugger;
     return docList_v2[id];
   }
 
@@ -300,7 +299,7 @@ export default class FormList extends Component {
 
 
   onKeydownhandler(e) {
-    const { constextPopupIsShow } = this.state;
+    const { constextPopupIsShow, popupIsShow } = this.state;
 
     if (e.keyCode === 27) {
       if (this.state.constextPopupIsShow) {
@@ -315,7 +314,6 @@ export default class FormList extends Component {
       }
     }
   }
-
 
   contextMenu(e) {
     let menuPosition = this.positionMenu(e);
@@ -365,7 +363,6 @@ export default class FormList extends Component {
 
   constextPopupIsShow() {
     this.setState({ constextPopupIsShow: false });
-    // console.log(this.state.constextPopupIsShow)
   }
 
   foo(curDoc, e) {
@@ -473,7 +470,8 @@ export default class FormList extends Component {
       dataPeriodAndYear,
       doclist,
       clientIsChecked,
-      dochistory
+      dochistory,
+      saveDocHistoryId
     } = this.props;
 
     const positionX = menuPositionX;
@@ -548,6 +546,7 @@ export default class FormList extends Component {
             menuPositionX={menuPositionX}
             menuPositionY={menuPositionY}
             dochistory={dochistory}
+            saveDocHistoryId={saveDocHistoryId}
             closePopupHistory={::this.closePopupHistory}
           />}
       </div>

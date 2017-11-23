@@ -4,7 +4,6 @@ import ReportPeriod from './ReportPeriod';
 import Report from './Report';
 import DocTable from './DocTable';
 import './style.css';
-// import axios from 'axios';
 
 export let data;
 
@@ -39,51 +38,31 @@ export class DocList extends Component {
     };
 
     this.onKeydownhandler = this.onKeydownhandler.bind(this);
-    // this.closeAllPopup = this.closeAllPopup.bind(this);
   }
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeydownhandler);
-    // document.addEventListener('click', this.closeAllPopup);
-    console.log(document.title);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeydownhandler);
-    // document.removeEventListener('click', this.closeAllPopup);
   }
-
-  // closeAllPopup({ target }) {
-  //   const { showGenerateReport, clientShow } = this.state;
-  //   const targetClass = target.classList;
-  //   const targetParent = target.parentNode;
-  //
-  //   const targetClick = targetClass.contains('clients-items-btn') ||
-  //     targetParent.parentNode.classList.contains('show') ||
-  //     targetClass.contains('show') ||
-  //     targetClass.contains('analytic-report') ||
-  //     targetParent.parentNode.classList.contains('report-popup') ||
-  //     targetParent.classList.contains('report-popup') ||
-  //     targetClass.contains('report-popup');
-  //
-  //   if (targetClick) return;
-  //
-  //   this.setState({
-  //     clientShow: false,
-  //     showGenerateReport: false
-  //   });
-  // };
-
 
   changePeriodsOnNext() {
     let { periodIsChecked, yearIsChecked } = this.state;
 
     if (periodIsChecked !== 4) {
-      this.setState({periodIsChecked: ++periodIsChecked});
+      this.setState({
+        periodIsChecked: ++periodIsChecked
+      });
+
       return;
     }
+
     if (yearIsChecked !== curYear) {
-      this.setState({periodIsChecked: 1, yearIsChecked: ++yearIsChecked});
+      this.setState({
+        periodIsChecked: 1, yearIsChecked: ++yearIsChecked
+      });
     }
   }
 
@@ -91,11 +70,17 @@ export class DocList extends Component {
     let { periodIsChecked, yearIsChecked } = this.state;
 
     if (periodIsChecked !== 1) {
-      this.setState({periodIsChecked: --periodIsChecked});
+      this.setState({
+        periodIsChecked: --periodIsChecked
+      });
+
       return;
     }
+
     if (yearIsChecked !== 1996) {
-      this.setState({periodIsChecked: 4, yearIsChecked: --yearIsChecked});
+      this.setState({
+        periodIsChecked: 4, yearIsChecked: --yearIsChecked
+      });
     }
   }
 
@@ -217,7 +202,8 @@ export class DocList extends Component {
       listClient,
       formsList,
       filterListClients,
-      dochistory
+      dochistory,
+      saveDocHistoryId
     } = this.props;
 
     const {
@@ -265,7 +251,6 @@ export class DocList extends Component {
           isPeriod={isPeriod}
           clientIsChecked={clientIsChecked}
           getdocList={getdocList}
-          // dataPeriodAndYear={dataPeriodAndYear}
           periodIsChecked={periodIsChecked}
           yearIsChecked={yearIsChecked}
         />
@@ -295,6 +280,7 @@ export class DocList extends Component {
             getdocList={getdocList}
             fetchDocHistory={fetchDocHistory}
             dochistory={dochistory}
+            saveDocHistoryId={saveDocHistoryId}
           />
         }
       </div>

@@ -4,8 +4,6 @@ import { bindActionCreators } from 'redux';
 import axios from 'axios';
 
 import * as ExcelActions from '../actions/ExcelActions';
-
-import Authentication from './Authentication';
 import { DocList } from '../components/DocList/DocList';
 
 class App extends Component {
@@ -39,7 +37,6 @@ class App extends Component {
           isAuthorized: true,
           formsList: forms.data,
           listClient: clients.data,
-          // listClientFiltered: clients.data
         });
       }))
       .catch((error) => {
@@ -68,7 +65,8 @@ class App extends Component {
   render() {
     const {
       getDocList,
-      fetchDocHistory
+      fetchDocHistory,
+      saveDocHistoryId
     } = this.props.excelActions;
     const {
       listClient,
@@ -92,6 +90,7 @@ class App extends Component {
               listClient={listClient}
               listClientFiltered={listClientFiltered}
               formsList={formsList}
+              saveDocHistoryId={saveDocHistoryId}
             />
         }
       </div>

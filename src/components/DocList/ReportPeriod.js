@@ -19,19 +19,14 @@ export default class ReportPeriod extends PureComponent {
 
   isCheckAnalyticYear() {
     const inputValue = this.inputText.value;
-    console.log(inputValue);
 
     if (inputValue >= 1996 && inputValue <= 2017) {
-      this.setState({
-        isChecked: true
-      });
+      this.setState({ isChecked: true });
 
       return false;
     }
 
-    this.setState({
-      isChecked: false
-    });
+    this.setState({ isChecked: false });
   }
 
   getDocs() {
@@ -67,6 +62,10 @@ export default class ReportPeriod extends PureComponent {
       .catch(err => console.log(err));
   }
 
+  isDisableBtn() {
+    return (this.props.clientIsChecked && this.state.isChecked) ? false : true;
+  };
+
   render () {
     const { isChecked } = this.state;
 
@@ -96,7 +95,7 @@ export default class ReportPeriod extends PureComponent {
         Отчетный период:
         <select
           className="select-periods"
-          defaultValue={periodIsChecked}
+          value={periodIsChecked}
           onChange={handlerPeriodIsChecked}
         >
           { perodItemsTemplate }
@@ -113,14 +112,14 @@ export default class ReportPeriod extends PureComponent {
             onBlur={this.isCheckAnalyticYear}
             ref={input => this.inputText = input}
             className={labalYearClassName}
-            defaultValue={yearIsChecked}
+            value={yearIsChecked}
             onChange={handlerYearIsChecked}
             type="text"
           />
         </label>
         <button
           onClick={::this.getDocs}
-          disabled={!clientIsChecked && isChecked}
+          disabled={this.isDisableBtn()}
         >применить ✔
         </button>
         <button onClick={::this.changePeriodsPrev}>◄ назад</button>

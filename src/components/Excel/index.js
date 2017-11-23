@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import TableHeaders from './components/TableHeaders';
 import TableRows from './components/TableRows';
-import ModalBox from './components/ModalBox';
 
 import './style.scss';
 
@@ -20,25 +19,21 @@ export default class Excel extends Component {
     };
 
     this.onSaveData = this.onSaveData.bind(this);
-    this.mountModalBox = this.mountModalBox.bind(this);
-    this.unmountModalBox = this.unmountModalBox.bind(this);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
 
   onSaveData() {
     this.props.onSaveData();
+    this.setState({ renderModalBox: true });
+
+    this.timer = setTimeout(() => {
+      this.setState({ renderModalBox: false });
+    }, 1000);
   }
 
-  mountModalBox() {
-    this.setState({
-      renderModalBox: true
-    });
-  }
-
-  unmountModalBox() {
-    this.setState({
-      renderModalBox: false
-    });
-  }
 
   render() {
     const { pasteData } = this.props;
@@ -102,18 +97,11 @@ export default class Excel extends Component {
         break;
     }
 
+    const modalBoxClass = "modal-box " + (this.state.renderModalBox ? "modal-box-show" : "modal-box-hide");
+
     return (
       <div className="excel">
-        {
-          this.props.savingDataFetching.response ?
-            <ModalBox
-              show={ this.state.renderModalBox }
-              response={ this.props.savingDataFetching.response }
-              mountModalBox={ this.mountModalBox }
-              unmountModalBox={ this.unmountModalBox }
-            /> :
-            null
-        }
+        <div className={modalBoxClass}>Документ успешно сохранен!</div>
         <h1>{ data.name }</h1>
 
         <p>Документ заполняется в тысячах рублей</p>

@@ -13,6 +13,7 @@ class App extends Component {
     });
 
     this.props.excelActions.getDocumentData(window.location.href);
+    // debugger;
 
     let titles = ['Отчет о финансовых результатах', 'Бухгалтерский баланс'];
     let curTitle = this.props.location.search.match('FORM01') ||
@@ -40,7 +41,7 @@ class App extends Component {
 
   onSaveData() {
     this.props.excelActions.saveData(this.props.excel.valuesHash, this.props.excel.data);
-    console.log(this.props.excel)
+    // debugger;
   }
 
   render() {
@@ -53,7 +54,6 @@ class App extends Component {
       savingDataFetching
     } = this.props.excel;
 
-    // const updateStore = this.props.excelActions.updateStore;
     const {
       updateStore,
       pasteDataInExcel
@@ -68,11 +68,11 @@ class App extends Component {
           modelView={ ReportType1 }
           fetching={ fetching }
           valuesHash={ valuesHash }
-          onCellChange={ ::this.onCellChange }
-          onSaveData={ ::this.onSaveData }
           savingDataFetching={ savingDataFetching }
           pasteData={pasteDataInExcel}
           updateStore={updateStore}
+          onCellChange={ ::this.onCellChange }
+          onSaveData={ ::this.onSaveData }
         />
       </div>
     );
@@ -81,7 +81,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    excel: state.excel
+    excel: state.excel,
+    curDocHistoryId: state.docHistory.curDocHistoryId
   };
 };
 

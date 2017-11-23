@@ -2,7 +2,8 @@
 const innitialState = {
   fetching: false,
   fetchingError: null,
-  docs: []
+  docs: [],
+  curDocHistoryId: null
 };
 
 export default function docHistory(state = innitialState, { type, payload }) {
@@ -27,6 +28,13 @@ export default function docHistory(state = innitialState, { type, payload }) {
         fetching: false,
         fetchingError: payload
       };
+
+    case 'SAVE_DOC_ID':
+      return {
+        ...state,
+        curDocHistoryId: payload
+      };
+
 
     default:
       return state;

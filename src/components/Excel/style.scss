@@ -379,3 +379,25 @@ html {
     -moz-transform: rotate(900deg);
   }
 }
+
+.modal-box {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  width: 400px;
+  min-height: 30px;
+  text-align: center;
+  padding: 20px;
+  font-size: 23px;
+  background-color: #92d050;
+  transition: .2s;
+  border-radius: 5px;
+}
+
+.modal-box-show {
+  transform: translateX(-50%) translateY(0px);
+}
+
+.modal-box-hide {
+  transform: translateX(-50%) translateY(-100px);
+}

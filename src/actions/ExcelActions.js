@@ -179,17 +179,26 @@ function getJSONData(url) {
  * @param { String } url
  * @returns {function(*=)}
  */
-export function getDocumentData(url) {
+export function getDocumentData(url, id) {
+  // debugger;
   return ((dispatch) => {
     dispatch({
       type: GET_DATA_REQUEST,
       payload: 'Loading...'
     });
 
+    // For the getXMLData func
     const doctypeURL = url.match(/type=[^&]*/g)[0].match(/\d+/g)[0];
+    const docId = url.match('id');
+    const getId = docId && url.slice(docId.index + 3);
+
+
+    const idDoc = `http://192.168.235.188:9081/prototype/getDocData?docid=${getId}`;
+    const getDocDataUrl = docId && idDoc || `http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`;
+    debugger;
 
     dispatch(getXMLData(doctypeURL)).then(() => {
-      dispatch(getJSONData(`http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`)).then(() => {
+      dispatch(getJSONData(getDocDataUrl)).then(() => {
         dispatch({
           type: CALCULATE_INITIAL_DATA
         });
@@ -235,14 +244,15 @@ export function saveData(data, doctype) {
     // (like in getDocumentData function)
     saveDocumentDataAPI(data, doctype)
       .then((response) => {
-        // debugger;
         dispatch({
           type: SAVE_DATA_SUCCESS,
-          // payload: JSON.parse(response)
+          payload: response
         });
+        return response;
       })
-      .then(() => {
+      .then((response) => {
         localStorage.setItem('save', 'true');
+        return response;
       })
       .catch((err) => {
         dispatch({
@@ -250,5 +260,15 @@ export function saveData(data, doctype) {
           payload: err
         });
       });
+  });
+}
+
+
+export function saveDocHistoryId(id) {
+  return ((dispatch) => {
+    dispatch({
+      type: 'SAVE_DOC_ID',
+      payload: id
+    });
   });
 }

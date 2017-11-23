@@ -7,17 +7,16 @@ export default class DocHistory extends PureComponent {
 
     this.state = {
       header: ['Номер версии', 'Статус', 'Дата изменения', 'Автор'],
-      idCheckedVersion: null
+      idCheckedVersion: null,
+      docId: null
     };
 
     this.toCheckedVersion = this.toCheckedVersion.bind(this);
   }
 
-
   renderHeaderDocHistory(data) {
     return data.map((item, i) => <div key={i} className="doc-history-header-item">{item}</div>);
   }
-
 
   renderRowsItemsDocHistory(data) {
     const rowsItems = [];
@@ -32,41 +31,34 @@ export default class DocHistory extends PureComponent {
   }
 
   toCheckedVersion(e) {
-    const id = e.target.parentNode.dataset.id;
+    const id = +e.target.parentNode.dataset.id;
+    this.props.saveDocHistoryId(id);
+
     const dochistory = this.props.dochistory;
-    // let url;
+    let url;
 
     let promise = new Promise((resolve, rejected) => {
-      let url;
-      for (let item of dochistory) {
-        if (+item.id === id) {
-          url =
-            `getDocDataByKey?clientName=${item.client}&type=${item.type}&Q=${item.period}&year=${item.year}`;
-          break;
+
+
+      dochistory.forEach((item) => {
+        if (item.id === id) {
+          url =`getDocDataByKey?clientName=${item.client}&type=${item.type}&Q=${item.period}&year=${item.year}&edit=false&id=${id}`;
+          resolve(url);
+          return;
         }
-      }
-      resolve(url);
+      });
     });
 
     promise
       .then((response) => {
         console.log(response);
-        // window.open(response, '_blank')
+        window.open(response, '_blank')
       })
       .catch((errro) => console.log(error));
+
+    return url;
   }
 
-  // lookingDocs(id) {
-  //   const docs = this.props.dochistory;
-  //   let url;
-  //   for (let item of docs) {
-  //     if (+item.id === id) {
-  //       url = `getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
-  //       break;
-  //     }
-  //   }
-  //   return url;
-  // }
 
   renderRowsDocHistory(data) {
     const idChecked = this.props.isChecked;
