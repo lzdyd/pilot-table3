@@ -44,15 +44,6 @@ const saveDocumentDataAPI = (data, doctype) => {
 
     xhr.send(JSON.stringify(updatedDoctype));
   });
-
-  // Promise for testing modalbox
-/*  return new Promise((resolve, reject) => {
-    if (true) {
-      resolve('{"message":"Документ успешно сохранён","status":"OK"}')
-    }
-
-    reject({"message":"Ошибка сохранения документа:null","status":"ERROR"})
-  });*/
 };
 
 export default function (data, doctype) {

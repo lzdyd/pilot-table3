@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 
 import numeral from 'numeral';
 
@@ -51,12 +50,10 @@ export default class TableCell extends Component {
       editing: false
     });
 
-    console.log(this.refs.input.value);
-
     if (+this.refs.input.value !== this.props.value) {
       const id = this.props.data.docField;
       if (!this.state.onPaste && this.refs.input.value) {
-        this.props.onCellChange(id, +this.refs.input.value);
+        this.props.onCellChange(id, Math.round(+this.refs.input.value));
       }
     }
   }

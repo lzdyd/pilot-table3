@@ -10,7 +10,6 @@ import warning from '../../../img/warning.png';
 import error from '../../../img/block.png';
 
 
-
 function generateFormList(data) {
   const formsArray = [];
   
@@ -106,18 +105,18 @@ function renderFormList(data, docList_v2) {
   }
 
 
-  const rowsTemplate = data.map((item, i) => {
+  const rowsTemplate = data.map(({ formid, fullName }, i) => {
     return (
       <div
-        id={item.formid}
+        id={formid}
         key={i}
         className="table-rows-item"
       >
         <span
           className="table-header__items  table-header__items-fix"
-        >{item.fullName}
+        >{fullName}
         </span>
-        {setDocFromList(AllPeriods, item.formid)}
+        {setDocFromList(AllPeriods, formid)}
       </div>
     );
   });
@@ -170,7 +169,7 @@ export default class FormList extends Component {
     this.getCurDoc = this.getCurDoc.bind(this);
     this.popupClose = this.popupClose.bind(this);
     this.onKeydownhandler = this.onKeydownhandler.bind(this);
-    this.contextMenu = _.throttle(this.contextMenu.bind(this), 0);
+    this.setContextMenuPosition = _.throttle(this.setContextMenuPosition.bind(this), 0);
   }
 
 
@@ -211,9 +210,7 @@ export default class FormList extends Component {
 
   // TODO переписать, потому что потому...
   getCurDoc(id) {
-    // debugger;
     const docList_v2 = createDocList(this.props.doclist);
-    // debugger;
     return docList_v2[id];
   }
 
@@ -264,10 +261,21 @@ export default class FormList extends Component {
     );
   }
 
+  setContextMenuPosition(e) {
+    let menuPosition = this.getPosition(e);
+    const dataKey = e.target.dataset.key  || e.target.parentNode.dataset.key;
+
+    this.setState({
+      curDoc: dataKey,
+      menuPositionX: menuPosition.x + "px",
+      menuPositionY: menuPosition.y + "px"
+    });
+  }
+
   contextssss(e) {
     e.preventDefault();
     e.persist();
-    this.contextMenu(e);
+    this.setContextMenuPosition(e);
     this.setState({
       constextPopupIsShow: true,
       popupHistoryShow: false
@@ -289,25 +297,16 @@ export default class FormList extends Component {
     }
   }
 
-  positionMenu(e) {
-    return this.getPosition(e);
-  }
-
-  // closeContextPpopup = (e) => {
-  //   console.log(e.target);
-  // };
-
-
   onKeydownhandler(e) {
     const { constextPopupIsShow, popupIsShow } = this.state;
 
     if (e.keyCode === 27) {
-      if (this.state.constextPopupIsShow) {
+      if (constextPopupIsShow) {
         this.setState({
           constextPopupIsShow: false
         });
       }
-      if (this.state.popupIsShow) {
+      if (popupIsShow) {
         this.setState({
           popupIsShow: false
         });
@@ -315,24 +314,12 @@ export default class FormList extends Component {
     }
   }
 
-  contextMenu(e) {
-    let menuPosition = this.positionMenu(e);
-    const dataKey = e.target.dataset.key  || e.target.parentNode.dataset.key;
-
-
-    this.setState({
-      curDoc: dataKey,
-      menuPositionX: menuPosition.x + "px",
-      menuPositionY: menuPosition.y + "px"
-    });
-  }
-
   getActionCurStatus(curDocObj, curDoc) {
     if (curDocObj.status === 0) {
       return (
         <a
           className="btn"
-          href={this.EditDocs.call(this, curDocObj) + '&edit=true'}
+          href={this.toEditDocs.call(this, curDocObj) + '&edit=true&status=' + curDocObj.status}
           target="_blank"
         >
           Редактировать
@@ -342,7 +329,7 @@ export default class FormList extends Component {
 
     return (
       <a
-        href={this.EditDocs.call(this, curDocObj) + '&edit=true'}
+        href={this.toEditDocs.call(this, curDocObj) + '&edit=true&status=' + curDocObj.status}
         target="_blank"
         className="btn"
       >
@@ -351,9 +338,8 @@ export default class FormList extends Component {
     );
   }
 
-
-  EditDocs({ client, period, year, type }) {
-    return `${CONTEXT}getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}`;
+  toEditDocs({ client, period, year, type, id }) {
+    return `${CONTEXT}getDocDataByKey?clientName=${client}&type=${type}&Q=${period}&year=${year}&id=${id}`;
   }
 
   createDocs(curDoc, client) {
@@ -365,7 +351,7 @@ export default class FormList extends Component {
     this.setState({ constextPopupIsShow: false });
   }
 
-  foo(curDoc, e) {
+  showHistory(curDoc, e) {
     let promise = new Promise((resolve, rejected) => {
       resolve(this.getCurDoc(curDoc));
     });
@@ -383,7 +369,7 @@ export default class FormList extends Component {
   toArchive(curDoc, e) {
     let doc = this.getCurDoc(curDoc);
     const { getdocList, dataPeriodAndYear } = this.props;
-    const url = `http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=3`;
+    const url = doc && `http://192.168.235.188:9081/prototype/setStatus?docid=${doc.id}&status=3`;
 
     let promise = new Promise((resolve, rejected) => {
       if (doc) {
@@ -514,7 +500,7 @@ export default class FormList extends Component {
             }
             {popupIsShow && curDocObj &&
               <a
-                href={`${this.EditDocs.call(this, curDocObj)}&edit=false` }
+                href={`${this.toEditDocs.call(this, curDocObj)}&edit=false` }
                 target="_blank"
                 className={popupClassNameBtnLook}
               >Просмотреть
@@ -536,7 +522,7 @@ export default class FormList extends Component {
             toArchive={::this.toArchive}
             toOk={::this.toOk}
             toEdit={::this.toEdit}
-            foo={::this.foo}
+            showHistory={::this.showHistory}
             constextPopupIsShow={::this.constextPopupIsShow}
           />
         }

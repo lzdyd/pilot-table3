@@ -33,6 +33,32 @@ export function pasteDataInExcel(obj) {
   });
 }
 
+// export function toAcceptDoc(id) {
+//   const url = `http://192.168.235.188:9081/prototype/docAccept?docid=${id}`;
+//
+//   return ((dispatch) => {
+//     dispatch({
+//       type: 'TO_ACCEPT_REQUEST',
+//       payload: 'Loading'
+//     });
+//
+//
+//     axios.get(url, { withCredentials: true })
+//       .then((response) => {
+//         dispatch({
+//           type: 'TO_ACCEPT_SUCCESS',
+//           payload: response.data
+//         });
+//       })
+//       .catch((err) => {
+//         dispatch({
+//           type: 'TO_ACCEPT_FAILURE',
+//           payload: err
+//         });
+//       })
+//   });
+// }
+
 
 export function getDocList({ client, year, period }) {
   const url = `http://192.168.235.188:9081/prototype/docList?clientName=${client}&Q=${period}&year=${year}`;
@@ -180,22 +206,21 @@ function getJSONData(url) {
  * @returns {function(*=)}
  */
 export function getDocumentData(url, id) {
-  // debugger;
   return ((dispatch) => {
     dispatch({
       type: GET_DATA_REQUEST,
       payload: 'Loading...'
     });
 
+
     // For the getXMLData func
     const doctypeURL = url.match(/type=[^&]*/g)[0].match(/\d+/g)[0];
     const docId = url.match('id');
     const getId = docId && url.slice(docId.index + 3);
 
-
-    const idDoc = `http://192.168.235.188:9081/prototype/getDocData?docid=${getId}`;
-    const getDocDataUrl = docId && idDoc || `http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`;
-    debugger;
+    const urlNotId = `http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`;
+    const urlWithId = `http://192.168.235.188:9081/prototype/getDocData?docid=${getId}&edit=false`;
+    const getDocDataUrl = docId && urlWithId || urlNotId;
 
     dispatch(getXMLData(doctypeURL)).then(() => {
       dispatch(getJSONData(getDocDataUrl)).then(() => {
@@ -272,3 +297,5 @@ export function saveDocHistoryId(id) {
     });
   });
 }
+
+

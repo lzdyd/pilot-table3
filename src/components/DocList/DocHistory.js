@@ -19,12 +19,31 @@ export default class DocHistory extends PureComponent {
   }
 
   renderRowsItemsDocHistory(data) {
+    let statusLabel = ['Архив', 'Редактируется', 'Утверджен'];
+    let i = 0;
     const rowsItems = [];
+
+    let status;
+
+    switch (data.status) {
+      case 0:
+        status = statusLabel[1];
+        break;
+
+      case 3:
+        status = statusLabel[0];
+        break;
+
+      default:
+        status = statusLabel[2];
+        break;
+    }
+
     rowsItems.push(
-      <div className="doc-history-rows-items">{data.version}</div>,
-      <div className="doc-history-rows-items">{data.status}</div>,
-      <div className="doc-history-rows-items">{data.modifyDate}</div>,
-      <div className="doc-history-rows-items">{data.modify_user}</div>
+      <div key={++i} className="doc-history-rows-items">{data.version}</div>,
+      <div key={++i} className="doc-history-rows-items">{status}</div>,
+      <div key={++i} className="doc-history-rows-items">{data.modifyDate}</div>,
+      <div key={++i} className="doc-history-rows-items">{data.modify_user}</div>
     );
 
     return rowsItems;
@@ -42,7 +61,7 @@ export default class DocHistory extends PureComponent {
 
       dochistory.forEach((item) => {
         if (item.id === id) {
-          url =`getDocDataByKey?clientName=${item.client}&type=${item.type}&Q=${item.period}&year=${item.year}&edit=false&id=${id}`;
+          url =`${CONTEXT}getDocDataByKey?clientName=${item.client}&type=${item.type}&Q=${item.period}&year=${item.year}&edit=false&id=${id}`;
           resolve(url);
           return;
         }
@@ -61,12 +80,10 @@ export default class DocHistory extends PureComponent {
 
 
   renderRowsDocHistory(data) {
-    const idChecked = this.props.isChecked;
     const rowsTemplate = data.map(
       (item, i) => {
         return (
           <a
-            // href={idChecked && this.lookingDocs.call(this, idChecked)}
             target="_blank"
             onDoubleClick={::this.toCheckedVersion}
             data-id={item.id}

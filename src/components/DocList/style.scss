@@ -386,7 +386,7 @@ button {
   cursor: pointer;
   border: 0;
   border-radius: 3px;
-  background-color: #a9a9a9a8;
+  background-color: rgba(169, 169, 169, 0.65);
   flex-grow: 0;
   margin-right: 20px;
   text-align: center;
@@ -414,7 +414,7 @@ select {
 }
 
 .clients-items-btn {
-  min-width: 240px;
+  min-width: 110px;
   margin-right: 20px;
   margin-left: 10px;
 }

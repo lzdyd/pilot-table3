@@ -2,8 +2,14 @@ import React, { Component } from 'react';
 
 import TableHeaders from './components/TableHeaders';
 import TableRows from './components/TableRows';
+import DescrDocument from './components/DescrDocument/';
 
 import './style.scss';
+import saveIcon from '../../../img/floppy.png';
+import checkIcon from '../../../img/check.png';
+import acceptIcon from '../../../img/accept.png';
+import xmlIcon from '../../../img/xml.jpg';
+import excelIcon from '../../../img/excel.png';
 
 /**
  * Created by lzdyd
@@ -36,7 +42,15 @@ export default class Excel extends Component {
 
 
   render() {
-    const { pasteData } = this.props;
+    const {
+      pasteData,
+      status,
+      toAcceptDoc,
+      onClickHandlerToAccept,
+      descrDoc,
+      jsonData
+    } = this.props;
+
     /**
      * If data is being fetched, render "Loading spinner"
      */
@@ -102,35 +116,58 @@ export default class Excel extends Component {
     return (
       <div className="excel">
         <div className={modalBoxClass}>Документ успешно сохранен!</div>
-        <h1>{ data.name }</h1>
-
-        <p>Документ заполняется в тысячах рублей</p>
-
-        <p>{ periodType }</p>
-
         {
           this.props.jsonData.edit ?
             <ul className="controls-list">
               <li>
                 <button onClick={ this.onSaveData }>
-                  {
-                    this.props.savingDataFetching.fetching ?
-                      <span>Сохраняю...</span> :
-                      <span>Сохранить</span>
-                  }
+                  <img
+                    src={saveIcon}
+                    className="img-btn"
+                    alt="Созранить"
+                    title="Созранить"
+                  />
                 </button>
               </li>
               <li>
-                <button>Проверить</button>
+                <button>
+                  <img
+                    title="Проверить"
+                    src={checkIcon}
+                    className="img-btn"
+                    alt="Проверить"
+                  />
+                </button>
+              </li>
+              {
+                status !== 7 &&
+                  <li>
+                    <button onClick={onClickHandlerToAccept}>
+                      <img
+                        src={acceptIcon}
+                        alt="Утвердить"
+                        title="Утвердить"
+                      />
+                    </button>
+                  </li>
+              }
+              <li>
+                <button>
+                  <img
+                    src={excelIcon}
+                    alt="Выгрузить в Excel"
+                    title="Выгрузить в Excel"
+                  />
+                </button>
               </li>
               <li>
-                <button>Утвердить</button>
-              </li>
-              <li>
-                <button>Загрузить данные из MS Excel</button>
-              </li>
-              <li>
-                <button>Выгрузить данные в XML</button>
+                <button>
+                  <img
+                    src={xmlIcon}
+                    alt="Загруить Xml"
+                    title="Загруить Xml"
+                  />
+                </button>
               </li>
             </ul> :
             <ul className="controls-list">
@@ -142,7 +179,8 @@ export default class Excel extends Component {
               </li>
             </ul>
         }
-
+        <h1>{ data.name }</h1>
+        <DescrDocument descrDoc={jsonData}/>
         <div className="excel-table">
           <TableHeaders data={ modelView }/>
           {

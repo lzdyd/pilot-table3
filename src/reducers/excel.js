@@ -32,7 +32,9 @@ const initialState = {
     fetching: false,
     response: null
   },
-  valuesHash: {}
+  valuesHash: {},
+  // accetDocId: null,
+  // fetchingToAccept: false
 };
 
 /**
@@ -88,9 +90,10 @@ function getDependencies(formula) {
  * @param { Object } data - received data from REST API server
  * @returns {{}}
  */
+
 function createValuesHash(data) {
   const hash = {};
-  // debugger;
+
   Object.values(this.docType1.attributes).forEach((item) => {
     hash[item.id] = {};
     hash[item.id].value = null;
@@ -432,7 +435,6 @@ function checkData(payload) {
     const updatedPayload = JSON.parse(JSON.stringify(payload.response));
 
     updatedPayload.edit = JSON.parse(payload.url.match(/edit=([^&]*)/)[1]);
-
     return updatedPayload;
   }
 
@@ -533,6 +535,25 @@ export default function employeesTable(state = initialState, action) {
         ...state,
         valuesHash: pasteValuesFromExcel.call(this, state, action.payload)
       };
+
+    // case 'TO_ACCEPT_REQUEST':
+    //   return {
+    //     ...state,
+    //     fetchingToAccept: true
+    //   };
+    //
+    // case 'TO_ACCEPT_SUCCESS':
+    //   return {
+    //     ...state,
+    //     accetDocId: action.payload,
+    //     fetchingToAccept: false
+    //   };
+    //
+    // case 'TO_ACCEPT_FAILURE':
+    //   return {
+    //     ...state,
+    //     fetchingToAccept: false
+    //   };
 
     default:
       return state;

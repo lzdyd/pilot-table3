@@ -4,8 +4,14 @@ import React, { PureComponent } from 'react';
 export default class ContextMenu extends PureComponent {
 
   fetchingDocHistory() {
-    this.props.foo(this.props.curDoc);
-    this.props.constextPopupIsShow();
+    const {
+      showHistory,
+      curDoc,
+      constextPopupIsShow
+    } = this.props;
+
+    showHistory(curDoc);
+    constextPopupIsShow();
     return false;
   }
 
@@ -16,7 +22,7 @@ export default class ContextMenu extends PureComponent {
       constextPopupIsShow,
       toArchive,
       toOk,
-      foo,
+      showHistory,
       toEdit,
       curDoc
     } = this.props;
@@ -37,16 +43,16 @@ export default class ContextMenu extends PureComponent {
           onClick={toArchive.bind(this, curDoc)}
         >Перевести в архив
         </a>
-        <a
-          className="btn"
-          onClick={toOk.bind(this, curDoc)}
-        >Перевести в УТВЕРЖДЕН
-        </a>
-        <a
-          className="btn"
-          onClick={toEdit.bind(this, curDoc)}
-        >Перевести в Редактировать
-        </a>
+        {/*<a*/}
+          {/*className="btn"*/}
+          {/*onClick={toOk.bind(this, curDoc)}*/}
+        {/*>Перевести в УТВЕРЖДЕН*/}
+        {/*</a>*/}
+        {/*<a*/}
+          {/*className="btn"*/}
+          {/*onClick={toEdit.bind(this, curDoc)}*/}
+        {/*>Перевести в Редактировать*/}
+        {/*</a>*/}
         <a
           className="btn"
           onClick={::this.fetchingDocHistory}
