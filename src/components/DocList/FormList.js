@@ -193,7 +193,7 @@ export default class FormList extends Component {
     document.addEventListener('click', this.closeContextPpopup);
 
     window.addEventListener('storage', () => {
-      localStorage.removeItem('save');
+      localStorage.clear();
       _this.props.getdocList(_this.props.dataPeriodAndYear);
     });
   }
@@ -438,7 +438,6 @@ export default class FormList extends Component {
       popupHistoryShow: false
     });
   }
-
 
   render() {
     const {

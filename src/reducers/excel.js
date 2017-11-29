@@ -32,7 +32,7 @@ const initialState = {
     fetching: false,
     response: null
   },
-  valuesHash: {},
+  valuesHash: {}
   // accetDocId: null,
   // fetchingToAccept: false
 };
@@ -536,24 +536,14 @@ export default function employeesTable(state = initialState, action) {
         valuesHash: pasteValuesFromExcel.call(this, state, action.payload)
       };
 
-    // case 'TO_ACCEPT_REQUEST':
-    //   return {
-    //     ...state,
-    //     fetchingToAccept: true
-    //   };
-    //
-    // case 'TO_ACCEPT_SUCCESS':
-    //   return {
-    //     ...state,
-    //     accetDocId: action.payload,
-    //     fetchingToAccept: false
-    //   };
-    //
-    // case 'TO_ACCEPT_FAILURE':
-    //   return {
-    //     ...state,
-    //     fetchingToAccept: false
-    //   };
+    case 'CHANGE_STATUS_EDIT':
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          edit: false
+        }
+      };
 
     default:
       return state;

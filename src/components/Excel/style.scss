@@ -20,17 +20,24 @@ html {
 
   .excel-table {
     display: table;
-    //border: 1px solid #ddd;
     border-radius: 5px;
 
     .table-row {
       display: table-row;
+
+      div {
+        border-right: 1px solid #000;
+      }
     }
 
     .table-row.selected {
       background-color: rgba(100,162,246,0.31);
     }
   }
+}
+
+.table-row-headers .table-cell{
+  border-right: 0 !important;
 }
 
 .loading {

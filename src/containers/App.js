@@ -62,6 +62,29 @@ class App extends Component {
     });
   }
 
+  handlerSendFiles = (e) => {
+    e.preventDefault();
+    // const form = this.form;
+    // const formData = new FormData(form);
+    //
+    // formData.append('section', 'general');
+    // formData.append('action', 'previewImg');
+    // formData.append('image', this.fileInput.files[0]);
+
+    const data = {
+
+    };
+
+    axios.post('http://192.168.235.188:9081/prototype/getReportData', formData, {
+      withCredentials: true,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
+
+    // debugger;
+  };
+
   render() {
     const {
       getDocList,
@@ -79,7 +102,25 @@ class App extends Component {
 
     return (
       <div className="main-app">
-        {
+        {/*<form*/}
+          {/*action=""*/}
+          {/*id="form"*/}
+          {/*ref={(form) => {this.form = form}}*/}
+        {/*>*/}
+          {/*<input*/}
+            {/*type="file"*/}
+            {/*name="file"*/}
+            {/*id="file-id"*/}
+            {/*ref={(input) => {this.fileInput = input}}*/}
+          {/*/>*/}
+          {/*<button*/}
+            {/*type="submit"*/}
+            {/*id="file-send"*/}
+            {/*onClick={this.handlerSendFiles}*/}
+          {/*>Отправить*/}
+          {/*</button>*/}
+        {/*</form>*/}
+          {
           isAuthorized &&
             <DocList
               fetchDocHistory={fetchDocHistory}

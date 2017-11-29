@@ -23,7 +23,7 @@ import {
   SAVE_DATA_SUCCESS,
   SAVE_DATA_FAILURE
 } from '../constants/index';
-
+``
 export function pasteDataInExcel(obj) {
   return ((dispatch) => {
     dispatch({
@@ -33,31 +33,13 @@ export function pasteDataInExcel(obj) {
   });
 }
 
-// export function toAcceptDoc(id) {
-//   const url = `http://192.168.235.188:9081/prototype/docAccept?docid=${id}`;
-//
-//   return ((dispatch) => {
-//     dispatch({
-//       type: 'TO_ACCEPT_REQUEST',
-//       payload: 'Loading'
-//     });
-//
-//
-//     axios.get(url, { withCredentials: true })
-//       .then((response) => {
-//         dispatch({
-//           type: 'TO_ACCEPT_SUCCESS',
-//           payload: response.data
-//         });
-//       })
-//       .catch((err) => {
-//         dispatch({
-//           type: 'TO_ACCEPT_FAILURE',
-//           payload: err
-//         });
-//       })
-//   });
-// }
+export function changeStatusEdit() {
+  return ((dispatch) => {
+    dispatch({
+      type: 'CHANGE_STATUS_EDIT'
+    });
+  });
+}
 
 
 export function getDocList({ client, year, period }) {
@@ -176,8 +158,9 @@ function getXMLData(doctypeURL) {
  * been created, server returns nothing. In this case, we create JSON manually based on url params
  * @param { String } url
  */
-function getJSONData(url) {
-  return dispatch => getDocumentDataAPI(url)
+function getJSONData(url, json = false) {
+  debugger;
+  return dispatch => getDocumentDataAPI(json || url)
     .then((response) => {
       if (response) {
         dispatch({
@@ -206,6 +189,7 @@ function getJSONData(url) {
  * @returns {function(*=)}
  */
 export function getDocumentData(url, id) {
+  // debugger;
   return ((dispatch) => {
     dispatch({
       type: GET_DATA_REQUEST,
@@ -219,8 +203,10 @@ export function getDocumentData(url, id) {
     const getId = docId && url.slice(docId.index + 3);
 
     const urlNotId = `http://192.168.235.188:9081/prototype/${url.match(/\/([^\/]+)\/?$/)[1]}`;
-    const urlWithId = `http://192.168.235.188:9081/prototype/getDocData?docid=${getId}&edit=false`;
-    const getDocDataUrl = docId && urlWithId || urlNotId;
+    const urlWithId = `http://192.168.235.188:9081/prototype/getDocData?docid=${id || getId}&edit=false`;
+    const getDocDataUrl = (id && urlWithId) || (docId && urlWithId) || urlNotId;
+
+    // debugger;
 
     dispatch(getXMLData(doctypeURL)).then(() => {
       dispatch(getJSONData(getDocDataUrl)).then(() => {
@@ -297,5 +283,4 @@ export function saveDocHistoryId(id) {
     });
   });
 }
-
 

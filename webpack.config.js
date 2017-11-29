@@ -6,7 +6,7 @@ const CONTEXT = process.env.NODE_ENV === 'development' ? '/' : '/fok-ui/';
 
 require('babel-polyfill');
 
-console.log('Dev build');
+console.log('Development build');
 
 module.exports = {
   context: path.join(__dirname, '\\src'),

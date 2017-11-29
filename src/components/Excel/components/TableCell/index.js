@@ -18,6 +18,7 @@ export default class TableCell extends Component {
     this.onBlur = this.onBlur.bind(this);
     this.getLabel = this.getLabel.bind(this);
     this.getRowNumber = this.getRowNumber.bind(this);
+    this.handlePaste = this.handlePaste.bind(this);
     // this.keyPressHandler = _.throttle(this.keyPressHandler.bind(this), 0);
   }
 
@@ -31,11 +32,11 @@ export default class TableCell extends Component {
       });
     }
 
-    if (this.props.activeCell === this.props.dataKey) {
-      this.setState({
-        // editing: true
-      });
-    }
+    // if (this.props.activeCell === this.props.dataKey) {
+    //   this.setState({
+    //     // editing: true
+    //   });
+    // }
   }
 
 
@@ -46,25 +47,33 @@ export default class TableCell extends Component {
   }
 
   onBlur() {
+    const inputValue = +this.refs.input.value;
+    const { value, onCellChange } = this.props;
+
     this.setState({
       editing: false
     });
 
-    if (+this.refs.input.value !== this.props.value) {
+    if (inputValue !== value) {
       const id = this.props.data.docField;
-      if (!this.state.onPaste && this.refs.input.value) {
-        this.props.onCellChange(id, Math.round(+this.refs.input.value));
+      if (!this.state.onPaste && inputValue) {
+        onCellChange(id, Math.round(inputValue));
       }
     }
   }
 
   getLabel(total) {
-    if (total && !this.props.data.docFieldLabel) {
-      return this.props.data.cellText;
+    const {
+      docFieldLabel,
+      cellText
+    } = this.props.data;
+
+    if (total && !docFieldLabel) {
+      return cellText;
     }
 
     const label = this.props.dataAttrs.attributes.filter((item) => {
-      return item.id === this.props.data.docFieldLabel;
+      return item.id === docFieldLabel;
     });
 
     return label[0].label;
@@ -74,7 +83,7 @@ export default class TableCell extends Component {
     return this.props.data.cellText;
   }
 
-  handlePaste (e) {
+  handlePaste(e) {
     let clipboardData;
     let pastedData;
     let target = e.target.parentNode.parentNode;
@@ -86,7 +95,6 @@ export default class TableCell extends Component {
     // Get pasted data via clipboard API
     clipboardData = e.clipboardData || window.clipboardData;
     pastedData = clipboardData.getData('Text').split(/\n/).map((item) => {
-
       let num;
 
       if (item.indexOf('(') !== -1) {
@@ -98,10 +106,10 @@ export default class TableCell extends Component {
       return num;
     });
 
-    let len = pastedData.length - 1;
+    const len = pastedData.length - 1;
     let i = 0;
 
-    arrValueTarget.push('F' + target.childNodes[1].innerHTML);
+    arrValueTarget.push(`F${target.childNodes[1].innerHTML}`);
 
     while (true) {
       if (!target.nextSibling.childNodes[2].dataset.key) {
@@ -109,7 +117,7 @@ export default class TableCell extends Component {
         continue;
       }
 
-      arrValueTarget.push('F' + target.nextSibling.childNodes[1].innerHTML);
+      arrValueTarget.push(`F${target.nextSibling.childNodes[1].innerHTML}`);
       target = target.nextSibling;
 
       i++;
@@ -117,7 +125,7 @@ export default class TableCell extends Component {
       if (i === len) break;
     }
 
-    let mapValue = [];
+    const mapValue = [];
 
     for (let i = 0; i < arrValueTarget.length; i++) {
       mapValue.push({
@@ -145,9 +153,18 @@ export default class TableCell extends Component {
   // };
 
   render() {
-    const cellType = this.props.data.style;
+    // const cellType = this.props.data.style;
+    const {
+      valuesHash,
+      editable,
+      dataKey
+    } = this.props;
+    const {
+      docField,
+      style
+    } = this.props.data;
 
-    switch (cellType) {
+    switch (style) {
       case 'TextField':
         return (
           <div className="table-cell table-cell-label">
@@ -177,10 +194,12 @@ export default class TableCell extends Component {
         );
 
       case 'NumberField':
-        if (!this.props.editable) {
+        if (!editable) {
           return (
             <div className={ 'table-cell table-cell-data' }>
-              <span>{ numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)') }</span>
+              <span>
+                {numeral(valuesHash[docField].value).format('(0,0)')}
+              </span>
             </div>
           );
         }
@@ -189,35 +208,29 @@ export default class TableCell extends Component {
           <div
             className={ 'table-cell table-cell-data table-cell-input-field' }
             onClick={ this.onFocus }
-            data-key={ this.props.dataKey }>
+            data-key={ dataKey }>
             {
               this.state.editing ?
                 <input
-                  onKeyPress={this.keyPress}
-                  onPaste={::this.handlePaste}
                   className="table-cell__input"
                   type="text"
                   ref="input"
-                  defaultValue={ this.props.valuesHash[this.props.data.docField].value }
+                  defaultValue={ valuesHash[docField].value }
                   onBlur={ this.onBlur }
+                  onKeyPress={this.keyPress}
+                  onPaste={this.handlePaste}
                 /> :
-                  (() => {
-                    if (this.props.valuesHash[this.props.data.docField].value ||
-                        this.props.valuesHash[this.props.data.docField].value === 0) {
-                      return (
-                        <span>
-                          {numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)')}
-                        </span>
-                      );
-                    } else if (this.props.valuesHash[this.props.data.docField].value === null) {
-                      return <span></span>;
-                    }
-
-
-                  })()
-                // <span>
-                //   {numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)')}
-                // </span>
+                (() => {
+                  if (valuesHash[docField].value || valuesHash[docField].value === 0) {
+                    return (
+                      <span>
+                        {numeral(valuesHash[docField].value).format('(0,0)')}
+                      </span>
+                    );
+                  } else if (valuesHash[docField].value === null) {
+                    return <span></span>;
+                  }
+                })()
             }
           </div>
         );
@@ -226,7 +239,7 @@ export default class TableCell extends Component {
         return (
           <div className="table-cell table-cell-data table-cell-data-bold">
             {
-              numeral(this.props.valuesHash[this.props.data.docField].value).format('(0,0)')
+              numeral(valuesHash[docField].value).format('(0,0)')
             }
           </div>
         );

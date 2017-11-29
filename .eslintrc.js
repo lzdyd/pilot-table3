@@ -21,6 +21,7 @@ module.exports = {
   "rules": {
     "skipBlankLines": 0,
     "comma-dangle": ["error", "never"],
-    "arrow-body-style": [0, "as-needed"]
+    "arrow-body-style": [0, "as-needed"],
+    "linebreak-style": "off"
   }
 };
